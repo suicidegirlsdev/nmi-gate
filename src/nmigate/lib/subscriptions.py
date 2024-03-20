@@ -14,24 +14,26 @@ class Subscriptions(Nmi):
 
     
     @postProcessingOutput   
-    def custom_sale_using_vault(self, plan_id, customer_vault_id, create_customer_vault=False):
+    def custom_sale_using_vault(self, plan_id, customer_vault_id, transaction_id, create_customer_vault=False):
 
         plan = self.plans.get_plan(plan_id)
-        plan_amout = plan['plan_amount']
+        plan_amount = plan['plan_amount']
 
         data = {
             "type": "sale",
             "recurring": "add_subscription",
             "initiated_by": "merchant",
+            "stored_credential_indicator": "used",
+            "initial_transaction_id": transaction_id,
             "security_key": self.security_token,
-            "amount": str(plan_amout),
+            "amount": str(plan_amount),
             "customer_vault_id": customer_vault_id,
             "plan_id": plan_id,
         }
         data["customer_vault"] = "add_customer" if create_customer_vault else None
         
         response = requests.post(url="https://secure.networkmerchants.com/api/transact.php", data=data)
-        return {"response": response, "req":{"customer_vault_id": customer_vault_id, "plan_id": plan_id, "total": plan_amout},  "type": 'set_subscription_with_sale_and_vault', "org": self.org}
+        return {"response": response, "req":{"customer_vault_id": customer_vault_id, "plan_id": plan_id, "total": plan_amount},  "type": 'set_subscription_with_sale_and_vault', "org": self.org}
 
 
 
@@ -43,7 +45,10 @@ class Subscriptions(Nmi):
         data = {
             "type": "sale",
             "recurring": "add_subscription",
+            "billing_method":"recurring",
             "initiated_by": "merchant",
+            "stored_credential_indicator": "used",
+            "initial_transaction_id": request_sub["transaction_id"],
             "security_key": self.security_token,
             "customer_vault_id": request_sub['user_id'],
             "amount": request_sub['total_amount'],
@@ -68,7 +73,10 @@ class Subscriptions(Nmi):
         data = {
             "type": "sale",
             "recurring": "add_subscription",
+            "billing_method":"recurring",
             "initiated_by": "merchant",
+            "stored_credential_indicator": "used",
+            "initial_transaction_id": request_sub["transaction_id"],
             "security_key": self.security_token,
             "amount": request_sub['total_amount'],
             "customer_vault_id": request_sub['user_id'],

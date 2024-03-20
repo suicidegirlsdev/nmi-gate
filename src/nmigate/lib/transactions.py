@@ -7,6 +7,7 @@ class Transactions(Nmi):
     def __init__(self, token, org):
         super().__init__(token, org)
 
+
     @log
     @postProcessingOutput   
     def pay_with_token(self, payment_request):  
@@ -28,7 +29,9 @@ class Transactions(Nmi):
             "security_key": self.security_token,
             "customer_vault_id": payment_request["user_id"],
             "amount": payment_request["total"],
-            "initiated_by": "merchant"
+            "initiated_by": "merchant",
+            "stored_credential_indicator": "used",
+            "initial_transaction_id": payment_request["transaction_id"]
         }
         response = requests.post("https://secure.networkmerchants.com/api/transact.php", data=data)
         return {"response": response, "req":payment_request, "type": 'pay_with_customer_vault', 'org': self.org}

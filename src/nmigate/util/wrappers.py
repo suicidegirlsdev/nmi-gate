@@ -3,33 +3,39 @@ from urllib.parse import parse_qs, urlparse
 from datetime import datetime, date, timedelta
 import xmltodict
 
+
 def log(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         op_result = func(*args, **kwargs)
         return op_result
+
     return wrapper
+
 
 def postProcessXml(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
         # Before
         op_result = func(*args, **kwargs)
-        
-        xml_string = op_result.text.replace('<?xml version="1.0" encoding="UTF-8"?>', '')
+
+        xml_string = op_result.text.replace(
+            '<?xml version="1.0" encoding="UTF-8"?>', ""
+        )
         # xml_string = op_result.text.replace('<?xml version="1.0" encoding="UTF-8"?>', '')
         # Define custom entities for é, ï, and ü characters
-        entity_definitions = '<!DOCTYPE root [\n'
+        entity_definitions = "<!DOCTYPE root [\n"
         entity_definitions += '<!ENTITY eacute "&#233;">\n'
         entity_definitions += '<!ENTITY iuml "&#239;">\n'
         entity_definitions += '<!ENTITY uuml "&#252;">\n'
         entity_definitions += '<!ENTITY rsquo "&#x2019;">\n'
-        entity_definitions += ']>\n'
+        entity_definitions += "]>\n"
         # Parse XML string into an Element object
         response_dict = xmltodict.parse(entity_definitions + xml_string)
         return response_dict
+
     return wrapper
-              
+
 
 def postProcessingOutput(func):
     @functools.wraps(func)
@@ -38,32 +44,31 @@ def postProcessingOutput(func):
         nmi_operation = func(*args, **kwargs)
 
         # clean unwished loggin data
-        if 'req' in nmi_operation and 'security_key' in nmi_operation['req']:
-            nmi_operation['req'].pop('security_key')
+        if "req" in nmi_operation and "security_key" in nmi_operation["req"]:
+            nmi_operation["req"].pop("security_key")
 
-        # pre process nmi_detail 
+        # pre process nmi_detail
         nmi_response = nmi_operation.pop("response")
         nmi_response_parsed_url = urlparse(nmi_response.text)
         nmi_response_cleared = parse_qs(nmi_response_parsed_url.path)
-        
 
         # create new dictionary with all the data
-        nmi_operation['nm_response'] = nmi_response_cleared
+        nmi_operation["nm_response"] = nmi_response_cleared
         nmi_operation["date"] = datetime.now()
-        
+
         # Validate if nmi response is successfull
-        if nmi_response_cleared['response_code'][0] == '100':
-            nmi_operation['successfull'] = True
+        if nmi_response_cleared["response_code"][0] == "100":
+            nmi_operation["successfull"] = True
         else:
-            nmi_operation['successfull'] = False
-        
-        new_res={}
+            nmi_operation["successfull"] = False
+
+        new_res = {}
         try:
-            for key in nmi_operation['nm_response']:
-                new_res[key] = nmi_operation['nm_response'][key][0]
+            for key in nmi_operation["nm_response"]:
+                new_res[key] = nmi_operation["nm_response"][key][0]
         except:
             pass
-        nmi_operation['nm_response'] = new_res 
+        nmi_operation["nm_response"] = new_res
         return nmi_operation
-        
+
     return wrapper
