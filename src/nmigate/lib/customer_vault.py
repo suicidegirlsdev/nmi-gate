@@ -1,6 +1,7 @@
 from nmigate.util.wrappers import log, postProcessingOutput, postProcessXml
 from nmigate.lib.nmi import Nmi
 import requests
+from typing import Union, Dict, Any
 import uuid
 
 
@@ -11,7 +12,7 @@ class CustomerVault(Nmi):
 
 
     @postProcessingOutput
-    def create(self, vault_request):
+    def create(self, vault_request) -> Dict[str, Union[Any, str]]:
         uid = (uuid.uuid4().hex,)
 
         data = {
@@ -31,7 +32,7 @@ class CustomerVault(Nmi):
         return {"response": response, "type": "create_customer_vault"}
 
     @postProcessingOutput
-    def update(self, id: str, billing_info):
+    def update(self, id: str, billing_info) -> Dict[str, Union[Any, str]]:
         data = {
             "customer_vault": "update_customer",
             "security_key": self.security_token,
@@ -44,7 +45,7 @@ class CustomerVault(Nmi):
         return {"response": response, "type": "update_customer_vault"}
 
     @postProcessingOutput
-    def validate(self, user_id: str):
+    def validate(self, user_id: str)-> Dict[str, Union[Any, str]]:
         url = "https://secure.networkmerchants.com/api/transact.php"
         query = {
             "security_key": self.security_token,
@@ -56,7 +57,7 @@ class CustomerVault(Nmi):
         return {"response": response, "type": "create_customer_vault"}
 
     @postProcessXml
-    def get_billing_info_by_transaction_id(self, transaction_id):
+    def get_billing_info_by_transaction_id(self, transaction_id) -> Any:
         url = "https://secure.nmi.com/api/query.php"
         query = {
             "security_key": self.security_token,
@@ -66,7 +67,7 @@ class CustomerVault(Nmi):
         return response
 
     @postProcessXml
-    def get_customer_info(self, id):
+    def get_customer_info(self, id)-> Any:
         url = "https://secure.nmi.com/api/query.php"
         query = {
             "report_type": "customer_vault",
@@ -77,7 +78,7 @@ class CustomerVault(Nmi):
         return response
 
     @postProcessingOutput
-    def delete(self, id: str):
+    def delete(self, id: str)-> Dict[str, Union[Any, str]]:
         data = {
             "customer_vault": "delete_customer",
             "security_key": self.security_token,

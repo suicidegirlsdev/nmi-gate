@@ -1,11 +1,8 @@
 from nmigate.util.wrappers import postProcessXml, postProcessingOutput
 import requests 
-import xmltodict
 from nmigate.lib.nmi import Nmi
 from nmigate.lib.plans import Plans
-import functools
-from urllib.parse import parse_qs, urlparse
-from datetime import datetime, date, timedelta
+from typing import Dict, Union, Any
 
 class Subscriptions(Nmi):
     def __init__(self, token, org):
@@ -14,10 +11,11 @@ class Subscriptions(Nmi):
 
     
     @postProcessingOutput   
-    def custom_sale_using_vault(self, plan_id, customer_vault_id, transaction_id, create_customer_vault=False):
+    def custom_sale_using_vault(self, plan_id, customer_vault_id, transaction_id, create_customer_vault=False) -> Dict[str, Union[Any, str]]:
 
         plan = self.plans.get_plan(plan_id)
-        plan_amount = plan['plan_amount']
+        
+        plan_amount = plan['plan_amount'] if plan else None 
 
         data = {
             "type": "sale",
@@ -40,7 +38,7 @@ class Subscriptions(Nmi):
     """  if amount = 0 then its a simple subscription, if amount = 1 then its a subscription with sale """
     
     @postProcessingOutput   
-    def custom_sale_using_vault_month_frequency(self, request_sub):
+    def custom_sale_using_vault_month_frequency(self, request_sub) -> Dict[str, Union[Any, str]]:
         
         data = {
             "type": "sale",
@@ -68,7 +66,7 @@ class Subscriptions(Nmi):
 
     
     @postProcessingOutput   
-    def custom_with_sale_and_vault_day_frequency(self, request_sub):
+    def custom_with_sale_and_vault_day_frequency(self, request_sub)-> Dict[str, Union[Any, str]]:
             
         data = {
             "type": "sale",
@@ -94,7 +92,7 @@ class Subscriptions(Nmi):
 
 
     @postProcessXml
-    def get_info(self, id):
+    def get_info(self, id) -> Any:
         url = "https://secure.nmi.com/api/query.php"
         query = {
             "report_type": "recurring",
@@ -114,7 +112,8 @@ class Subscriptions(Nmi):
             "subscription_id": subscription_id,
         }
         response = requests.post(url="https://secure.networkmerchants.com/api/transact.php", data=data)
-        return {"response": response, "req": subscription_id,  "type": 'delete_subscription', "org": self.org}
+        del data["security_key"]
+        return {"response": response, "req": data,  "type": 'delete_subscription', "org": self.org}
 
 
     
@@ -127,4 +126,46 @@ class Subscriptions(Nmi):
             "paused_subscription": str(pause).lower(),
         }
         response = requests.post(url="https://secure.networkmerchants.com/api/transact.php", data=data)
-        return {"response": response, "req": subscription_id,  "type": 'pause_subscription', "org": self.org}
+        del data["security_key"]
+        return {"response": response, "req": data,  "type": 'pause_subscription', "org": self.org}
+
+
+    @postProcessingOutput
+    def update_month_subscription(self, subscription_id: str, customer_vault_id:str, billing_id: str, billing_info, plan_payments: str, plan_amount: str, day_of_month: str, month_frequency: str, start_date: str):
+        data = {
+            "recurring": "update_subscription",
+            "security_key": self.security_token,
+            "subscription_id": subscription_id,
+            "customer_vault_id": customer_vault_id,
+            "billing_id": billing_id,
+            "plan_payments": plan_payments,
+            "plan_amount": plan_amount,
+            "day_of_month": day_of_month,
+            "month_frequency": month_frequency,
+            "start_date": start_date # YYYYMMDD
+        }
+        data.update(billing_info)
+
+        response = requests.post(url="https://secure.networkmerchants.com/api/transact.php", data=data)
+        del data["security_key"]
+        return {"response": response, "req": data,  "type": 'update_month_subscription', "org": self.org}
+
+
+    @postProcessingOutput
+    def update_day_subscription(self, subscription_id: str, customer_vault_id:str, billing_id: str, billing_info, plan_payments: str, plan_amount: str, day_frequency: str, start_date: str):
+        data = {
+            "recurring": "update_subscription",
+            "security_key": self.security_token,
+            "subscription_id": subscription_id,
+            "customer_vault_id": customer_vault_id,
+            "billing_id": billing_id,
+            "plan_payments": plan_payments,
+            "plan_amount": plan_amount,
+            "day_frequency":  day_frequency,
+            "start_date": start_date # YYYYMMDD
+        }
+        data.update(billing_info)
+
+        response = requests.post(url="https://secure.networkmerchants.com/api/transact.php", data=data)
+        del data["security_key"]
+        return {"response": response, "req": data,  "type": 'update_day_subscription', "org": self.org}

@@ -2,7 +2,7 @@
 from nmigate.lib.nmi import Nmi
 from nmigate.util.wrappers import log, postProcessingOutput, postProcessXml
 import requests
-
+from typing import Dict, Union, Any
 
 class Plans(Nmi):
     def __init__(self, token, org):
@@ -10,7 +10,7 @@ class Plans(Nmi):
 
     @log
     @postProcessingOutput
-    def add_plan_by_month_config(self, data): 
+    def add_plan_by_month_config(self, data)-> Dict[str, Union[Any, str]]: 
         data = {
             'recurring': 'add_plan',
             "security_key": self.security_token,
@@ -26,7 +26,7 @@ class Plans(Nmi):
 
     @log
     @postProcessingOutput
-    def edit_plan_by_month_config(self, data): 
+    def edit_plan_by_month_config(self, data)-> Dict[str, Union[Any, str]]: 
         data = {
             'recurring': 'edit_plan',
             "security_key": self.security_token,
@@ -43,7 +43,7 @@ class Plans(Nmi):
 
     @log
     @postProcessingOutput
-    def add_plan_by_day_frequency(self, data): 
+    def add_plan_by_day_frequency(self, data)-> Dict[str, Union[Any, str]]: 
         data = {
             'recurring': 'add_plan',
             "security_key": self.security_token,
@@ -59,7 +59,7 @@ class Plans(Nmi):
 
     @log
     @postProcessingOutput
-    def edit_plan_by_day_frequency(self, data):
+    def edit_plan_by_day_frequency(self, data)-> Dict[str, Union[Any, str]]:
         data = {
             'recurring': 'edit_plan',
             "security_key": self.security_token,
@@ -74,7 +74,7 @@ class Plans(Nmi):
 
 
     @postProcessXml
-    def get_all_plans(self):
+    def get_all_plans(self) -> Any:
         url = "https://secure.nmi.com/api/query.php"
         query = {
             "security_key": self.security_token,
@@ -85,7 +85,7 @@ class Plans(Nmi):
     
 
     # @postProcessXml
-    def get_plan(self, id):
+    def get_plan(self, id) -> Union[None, Dict[str, Any]]:
         plans = self.get_all_plans()
         for plan in plans['nm_response']['plan']:
             if plan['plan_id'] == id:

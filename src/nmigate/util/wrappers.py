@@ -1,8 +1,8 @@
 import functools
 from urllib.parse import parse_qs, urlparse
-from datetime import datetime, date, timedelta
+from datetime import datetime
 import xmltodict
-
+from typing import Union, Dict, Any
 
 def log(func):
     @functools.wraps(func)
@@ -15,7 +15,7 @@ def log(func):
 
 def postProcessXml(func):
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs) -> Dict[str, Any]:
         # Before
         op_result = func(*args, **kwargs)
 
@@ -39,11 +39,11 @@ def postProcessXml(func):
 
 def postProcessingOutput(func):
     @functools.wraps(func)
-    def wrapper(*args, **kwargs):
+    def wrapper(*args, **kwargs)  -> Dict[str, Union[str, Dict[str, str]]]:
         # Before
         nmi_operation = func(*args, **kwargs)
 
-        # clean unwished loggin data
+        # clean unwished logging data
         if "req" in nmi_operation and "security_key" in nmi_operation["req"]:
             nmi_operation["req"].pop("security_key")
 
@@ -56,11 +56,11 @@ def postProcessingOutput(func):
         nmi_operation["nm_response"] = nmi_response_cleared
         nmi_operation["date"] = datetime.now()
 
-        # Validate if nmi response is successfull
+        # Validate if nmi response is successful
         if nmi_response_cleared["response_code"][0] == "100":
-            nmi_operation["successfull"] = True
+            nmi_operation["successful"] = True
         else:
-            nmi_operation["successfull"] = False
+            nmi_operation["successful"] = False
 
         new_res = {}
         try:
