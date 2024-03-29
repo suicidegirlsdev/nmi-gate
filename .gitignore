@@ -3,10 +3,10 @@
 __pycache__/
 *.py[cod]
 *$py.class
-
+dist
 # C extensions
 *.so
-
+./src/*.egg-info
 # Distribution / packaging
 .Python
 build/
