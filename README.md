@@ -260,3 +260,15 @@ pause=True # True to pause, False to unpause
 transactions = Subscriptions(secret_key, org)
 result = transactions.pause_subscription(subscription_id, pause)
 ```
+
+
+#### Tests
+To run tests in a cloned directory, you will need to set an appropriate PYTHONPATH env
+pointed at the "src" dir for the imports to work:
+```bash
+PYTHONPATH="${PYTHONPATH}:/path/to/cloned/nmigate/src"
+```
+Note that the project is "nmi-gate" so make sure the above is correct if used that for
+the dir.
+Warning: tests run against the live API. They are set to use the "demo" key now but
+still don't pass for various reasons.
