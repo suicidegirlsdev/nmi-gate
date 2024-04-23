@@ -17,7 +17,7 @@ class Billing(Nmi):
         response = requests.post(
             url="https://secure.networkmerchants.com/api/transact.php", data=data
         )
-        return {"response": response, "type": "validate_billing_id", "org": self.org}
+        return {"response": response, "type": "validate_billing_id"}
 
     @postProcessingOutput
     def add(self, billing_req):
@@ -31,7 +31,7 @@ class Billing(Nmi):
         }
         data.update(billing_req["billing_info"])
         res = requests.post(url="https://secure.nmi.com/api/transact.php", data=data)
-        return {"response": res, "type": "add_billing_info", "org": self.org}
+        return {"response": res, "type": "add_billing_info"}
 
     @postProcessingOutput
     def update(self, billing_req):
@@ -47,7 +47,7 @@ class Billing(Nmi):
         response = requests.post(
             url="https://secure.nmi.com/api/transact.php", data=data
         )
-        return {"response": response, "type": "update_billing_info", "org": self.org}
+        return {"response": response, "type": "update_billing_info"}
 
     @postProcessingOutput
     def delete(self, user_id, billing_id):
@@ -60,7 +60,7 @@ class Billing(Nmi):
         response = requests.post(
             url="https://secure.nmi.com/api/transact.php", data=data
         )
-        return {"response": response, "type": "delete_billing_info", "org": self.org}
+        return {"response": response, "type": "delete_billing_info"}
 
     @postProcessingOutput
     def change_subscription_billing(self, request):
@@ -79,7 +79,6 @@ class Billing(Nmi):
             "response": response,
             "req": request,
             "type": "update_subscription_billing",
-            "org": self.org,
         }
 
     @postProcessingOutput
@@ -94,4 +93,4 @@ class Billing(Nmi):
         response = requests.post(
             url="https://secure.nmi.com/api/transact.php", data=data
         )
-        return {"response": response, "type": "set_priority", "org": self.org}
+        return {"response": response, "type": "set_priority"}

@@ -27,7 +27,6 @@ class Plans(Nmi):
             "response": response,
             "req": data,
             "type": "add_plan_by_month_config",
-            "org": self.org,
         }
 
     @log
@@ -50,7 +49,6 @@ class Plans(Nmi):
             "response": response,
             "req": data,
             "type": "edit_plan_by_month_config",
-            "org": self.org,
         }
 
     @log
@@ -72,7 +70,6 @@ class Plans(Nmi):
             "response": response,
             "req": data,
             "type": "add_plan_by_day_frequency",
-            "org": self.org,
         }
 
     @log
@@ -94,7 +91,6 @@ class Plans(Nmi):
             "response": response,
             "req": data,
             "type": "edit_plan_by_day_frequency",
-            "org": self.org,
         }
 
     @postProcessXml

@@ -5,18 +5,18 @@ from src.nmigate.lib.plans import Plans
 
 class TestPlans(unittest.TestCase):
     def test_get_plans(self):
-        plansObj = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm", "testOrg")
+        plansObj = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         response = plansObj.get_all_plans()
         plans = response["nm_response"]["plan"]
         self.assertGreater(len(plans), 0)
 
     def test_get_plan(self):
-        plans = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm", "testOrg")
+        plans = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         response = plans.get_plan("swzshoppingonly")
         self.assertEqual(response["plan_id"], "swzshoppingonly")
 
     def test_add_plan_by_day_frequency(self):
-        plans = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm", "testOrg")
+        plans = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         response = plans.add_plan_by_day_frequency(
             {
                 "plan_amount": "10.00",
@@ -30,7 +30,7 @@ class TestPlans(unittest.TestCase):
         self.assertEqual(response["successfull"], True)
 
     def test_edit_plan_by_day_frequency(self):
-        plans = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm", "testOrg")
+        plans = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         response = plans.edit_plan_by_day_frequency(
             {
                 "recurring": "edit_plan",
@@ -45,7 +45,7 @@ class TestPlans(unittest.TestCase):
         self.assertEqual(response["successfull"], True)
 
     def test_add_plan_by_month_config(self):
-        plans = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm", "testOrg")
+        plans = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         response = plans.add_plan_by_month_config(
             {
                 "plan_amount": "10.00",
@@ -61,7 +61,7 @@ class TestPlans(unittest.TestCase):
         self.assertEqual(response["successfull"], True)
 
     def test_edit_plan_by_month_config(self):
-        plans = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm", "testOrg")
+        plans = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         response = plans.edit_plan_by_month_config(
             {
                 "plan_amount": "10.00",

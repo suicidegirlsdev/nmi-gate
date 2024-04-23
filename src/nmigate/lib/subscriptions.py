@@ -1,14 +1,16 @@
-from nmigate.util.wrappers import postProcessXml, postProcessingOutput
+from typing import Any, Dict, Union
+
 import requests
+
 from nmigate.lib.nmi import Nmi
 from nmigate.lib.plans import Plans
-from typing import Dict, Union, Any
+from nmigate.util.wrappers import postProcessingOutput, postProcessXml
 
 
 class Subscriptions(Nmi):
-    def __init__(self, token, org):
-        super().__init__(token, org)
-        self.plans = Plans(token, org)
+    def __init__(self, token):
+        super().__init__(token)
+        self.plans = Plans(token)
 
     @postProcessingOutput
     def custom_sale_using_vault(
@@ -42,7 +44,6 @@ class Subscriptions(Nmi):
                 "total": plan_amount,
             },
             "type": "set_subscription_with_sale_and_vault",
-            "org": self.org,
         }
 
     """  if amount = 0 then its a simple subscription, if amount = 1 then its a subscription with sale """
@@ -80,7 +81,6 @@ class Subscriptions(Nmi):
             "response": response,
             "req": request_sub,
             "type": "set_custom_subscription_with_sale_and_vault_month_config",
-            "org": self.org,
         }
 
     @postProcessingOutput
@@ -113,7 +113,6 @@ class Subscriptions(Nmi):
             "response": response,
             "req": request_sub,
             "type": "set_custom_subscription_with_sale_and_vault_day_frequency",
-            "org": self.org,
         }
 
     @postProcessXml
@@ -142,7 +141,6 @@ class Subscriptions(Nmi):
             "response": response,
             "req": data,
             "type": "delete_subscription",
-            "org": self.org,
         }
 
     @postProcessingOutput
@@ -161,7 +159,6 @@ class Subscriptions(Nmi):
             "response": response,
             "req": data,
             "type": "pause_subscription",
-            "org": self.org,
         }
 
     @postProcessingOutput
@@ -199,7 +196,6 @@ class Subscriptions(Nmi):
             "response": response,
             "req": data,
             "type": "update_month_subscription",
-            "org": self.org,
         }
 
     @postProcessingOutput
@@ -235,5 +231,4 @@ class Subscriptions(Nmi):
             "response": response,
             "req": data,
             "type": "update_day_subscription",
-            "org": self.org,
         }

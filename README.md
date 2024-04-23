@@ -15,10 +15,9 @@ This package was build with the unique intention to make the integration with th
 from nmigate.lib.customer_vault import CustomerVault
 
 secret_key = 'your secret key'
-org = 'your org'
 token = 'your test token here' # test token "00000000-000000-000000-000000000000"
 
-customer_vault = CustomerVault(secret_key, org)
+customer_vault = CustomerVault(secret_key)
     result = customer_vault.create_customer_vault({
         "id": "",
         "token": token,
@@ -43,10 +42,9 @@ customer_vault = CustomerVault(secret_key, org)
 from nmigate.lib.customer_vault import CustomerVault
 
 secret_key = 'your secret key'
-org = 'your org'
 transaction_id = 'transaction id '
 
-customer_vault = CustomerVault(secret_key, org)
+customer_vault = CustomerVault(secret_key)
 result = customer_vault.get_billing_info_by_transaction_id(transaction_id)
 ```
 
@@ -58,9 +56,8 @@ result = customer_vault.get_billing_info_by_transaction_id(transaction_id)
 from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 
-plansObj = Plans(secret_key, org)
+plansObj = Plans(secret_key)
 response = plansObj.get_all_plans()
 plans = response['nm_response']['plan']
 
@@ -72,10 +69,9 @@ plans = response['nm_response']['plan']
 from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 plan_id = 'your plan id'
 
-plans = Plans(secret_key, org)
+plans = Plans(secret_key)
 response = plans.get_plan(plan_id)
 
 ```
@@ -86,9 +82,8 @@ response = plans.get_plan(plan_id)
 from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 
-plans = Plans(secret_key, org)
+plans = Plans(secret_key)
 response = plans.add_plan_by_day_frequency({
     'plan_amount': '10.00',
     'plan_name': 'test',
@@ -105,9 +100,8 @@ response = plans.add_plan_by_day_frequency({
 from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 
-plans = Plans(secret_key, org)
+plans = Plans(secret_key)
 response = plans.edit_plan_by_day_frequency({
     "recurring": "edit_plan",
     'plan_amount': '10.00',
@@ -125,9 +119,8 @@ response = plans.edit_plan_by_day_frequency({
 from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 
-plans = Plans(secret_key, org)
+plans = Plans(secret_key)
 response = plans.add_plan_by_month_config({
     'plan_amount': '10.00',
     'plan_name': 'test',
@@ -145,9 +138,8 @@ response = plans.add_plan_by_month_config({
 from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 
-plans = Plans(secret_key, org)
+plans = Plans(secret_key)
 response = plans.edit_plan_by_month_config({
     'plan_amount': '10.00',
     'plan_name': 'test',
@@ -166,10 +158,9 @@ response = plans.edit_plan_by_month_config({
 from nmigate.lib.customer_vault import CustomerVault
 
 secret_key = 'your secret key'
-org = 'your org'
 subscription_id='customer vault id'
 
-subscriptions = Subscriptions(secret_key, org)
+subscriptions = Subscriptions(secret_key)
 info = subscriptions.get_info(subscription_id)
 print(result)
 ```
@@ -182,10 +173,9 @@ If total_amount = 0 then its a simple subscription, if total_amount > 0 then its
 from nmigate.lib.customer_vault import CustomerVault
 
 secret_key = 'your secret key'
-org = 'your org'
 customer_vault_id='customer vault id'
 
-subscriptions = Subscriptions(secret_key, org)
+subscriptions = Subscriptions(secret_key)
 result = subscriptions.custom_sale_using_vault(plan_id = customer_vault_id, customer_vault_id=customer_vault_id, create_customer_vault=False)
 print(result)
 ```
@@ -196,9 +186,8 @@ print(result)
 from nmigate.lib.subscriptions import Subscriptions
 
 secret_key = 'your secret key'
-org = 'your org'
 
-subscriptions = Subscriptions(secret_key, org)
+subscriptions = Subscriptions(secret_key)
 result = subscriptions.custom_sale_using_vault_month_frequency(request_sub = {
     "user_id": "1",
     "total_amount": "11",
@@ -219,9 +208,8 @@ print(result)
 from nmigate.lib.subscriptions import Subscriptions
 
 secret_key = 'your secret key'
-org = 'your org'
 
-subscriptions = Subscriptions(secret_key, org)
+subscriptions = Subscriptions(secret_key)
 result = subscriptions.custom_with_sale_and_vault_day_frequency(request_sub = {
     "user_id": "1",
     "total_amount": "14",
@@ -240,10 +228,9 @@ print(result)
 from nmigate.lib.subscriptions import Subscriptions
 
 secret_key = 'your secret key'
-org = 'your org'
 subscription_id = 'your subscription_id'
 
-subscriptions = Subscriptions(secret_key, org)
+subscriptions = Subscriptions(secret_key)
 info = subscriptions.delete_subscription(subscription_id)
 ```
 
@@ -253,11 +240,10 @@ info = subscriptions.delete_subscription(subscription_id)
 from nmigate.lib.subscriptions import Subscriptions
 
 secret_key = 'your secret key'
-org = 'your org'
 subscription_id = 'your subscription_id'
 pause=True # True to pause, False to unpause
 
-transactions = Subscriptions(secret_key, org)
+transactions = Subscriptions(secret_key)
 result = transactions.pause_subscription(subscription_id, pause)
 ```
 

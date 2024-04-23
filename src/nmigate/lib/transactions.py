@@ -24,7 +24,6 @@ class Transactions(Nmi):
             "response": response,
             "req": payment_request,
             "type": "pay_with_token",
-            "org": self.org,
         }
 
     @log
@@ -45,7 +44,6 @@ class Transactions(Nmi):
             "response": response,
             "req": payment_request,
             "type": "pay_with_customer_vault",
-            "org": self.org,
         }
 
     @log
@@ -66,5 +64,4 @@ class Transactions(Nmi):
             "response": response,
             "req": {"transaction_id": transaction_id},
             "type": "refund",
-            "org": self.org,
         }
