@@ -1,5 +1,20 @@
 # NMI Gateway
 
+## This fork:
+This fork mainly changes the lib to allow it to work with other NMI-like,
+gateways since NMI seems to offer their API as a white label service with different
+URLs. Just need to use the correct API urls (maybe? It will probably work at the nmi
+URLs, too). This makes the URLs requisite, but can set them on the nmi class.
+
+This fork also makes some other changes, such as doing some quick ruff formatting
+and other tweaks to make it more compatible with our own specific usage (and not
+necessarily of value to anyone else), including removing the "org" concept entirely
+(not used by the API or us, separate concern).
+
+Notes on testing at the end of this readme are ours.
+
+## Original Heading:
+
 This is a nmi handy package to interact with the nmi gateway endpoints, you can find the original documentation here:
 https://secure.networkmerchants.com/gw/merchants/resources/integration/integration_portal.php#cv_variables
 
@@ -248,7 +263,7 @@ result = transactions.pause_subscription(subscription_id, pause)
 ```
 
 
-#### Tests
+#### Tests:
 To run tests in a cloned directory, you will need to set an appropriate PYTHONPATH env
 pointed at the "src" dir for the imports to work:
 ```bash
@@ -257,4 +272,4 @@ PYTHONPATH="${PYTHONPATH}:/path/to/cloned/nmigate/src"
 Note that the project is "nmi-gate" so make sure the above is correct if used that for
 the dir.
 Warning: tests run against the live API. They are set to use the "demo" key now but
-still don't pass for various reasons.
+still don't pass for various reasons, some seem outdated. Left for now.

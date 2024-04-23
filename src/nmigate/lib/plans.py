@@ -12,7 +12,7 @@ class Plans(Nmi):
     def add_plan_by_month_config(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "add_plan",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "plan_amount": data["plan_amount"],
             "plan_name": data["plan_name"],
             "plan_id": data["plan_id"],
@@ -32,7 +32,7 @@ class Plans(Nmi):
     def edit_plan_by_month_config(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "edit_plan",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "plan_amount": data["plan_amount"],
             "plan_name": data["plan_name"],
             "current_plan_id": data["plan_id"],
@@ -52,7 +52,7 @@ class Plans(Nmi):
     def add_plan_by_day_frequency(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "add_plan",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "plan_amount": data["plan_amount"],
             "plan_name": data["plan_name"],
             "plan_id": data["plan_id"],
@@ -71,7 +71,7 @@ class Plans(Nmi):
     def edit_plan_by_day_frequency(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "edit_plan",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "plan_amount": data["plan_amount"],
             "plan_name": data["plan_name"],
             "current_plan_id": data["plan_id"],
@@ -89,7 +89,7 @@ class Plans(Nmi):
     def get_all_plans(self) -> Any:
         url = self.query_api_url
         query = {
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "report_type": "recurring_plans",
         }
         response = requests.post(url=url, data=query)

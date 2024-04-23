@@ -26,7 +26,7 @@ class Subscriptions(Nmi):
             "initiated_by": "merchant",
             "stored_credential_indicator": "used",
             "initial_transaction_id": transaction_id,
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "amount": str(plan_amount),
             "customer_vault_id": customer_vault_id,
             "plan_id": plan_id,
@@ -57,7 +57,7 @@ class Subscriptions(Nmi):
             "initiated_by": "merchant",
             "stored_credential_indicator": "used",
             "initial_transaction_id": request_sub["transaction_id"],
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "customer_vault_id": request_sub["user_id"],
             "amount": request_sub["total_amount"],
             "plan_payments": request_sub["custom_subscription_info"]["plan_payments"],
@@ -90,7 +90,7 @@ class Subscriptions(Nmi):
             "initiated_by": "merchant",
             "stored_credential_indicator": "used",
             "initial_transaction_id": request_sub["transaction_id"],
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "amount": request_sub["total_amount"],
             "customer_vault_id": request_sub["user_id"],
             "plan_payments": request_sub["custom_subscription_info"]["plan_payments"],
@@ -114,7 +114,7 @@ class Subscriptions(Nmi):
         url = self.query_api_url
         query = {
             "report_type": "recurring",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "subscription_id": id,
         }
         response = requests.post(url=url, data=query)
@@ -124,7 +124,7 @@ class Subscriptions(Nmi):
     def delete(self, subscription_id):
         data = {
             "recurring": "delete_subscription",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "subscription_id": subscription_id,
         }
         response = requests.post(url=self.payment_api_url, data=data)
@@ -139,7 +139,7 @@ class Subscriptions(Nmi):
     def pause_subscription(self, subscription_id, pause):
         data = {
             "recurring": "update_subscription",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "subscription_id": subscription_id,
             "paused_subscription": str(pause).lower(),
         }
@@ -166,7 +166,7 @@ class Subscriptions(Nmi):
     ):
         data = {
             "recurring": "update_subscription",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "subscription_id": subscription_id,
             "customer_vault_id": customer_vault_id,
             "billing_id": billing_id,
@@ -200,7 +200,7 @@ class Subscriptions(Nmi):
     ):
         data = {
             "recurring": "update_subscription",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "subscription_id": subscription_id,
             "customer_vault_id": customer_vault_id,
             "billing_id": billing_id,

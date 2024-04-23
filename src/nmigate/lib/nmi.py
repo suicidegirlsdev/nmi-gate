@@ -1,19 +1,19 @@
 class Nmi:
     # Can set these on the class at app init to avoid passing on every use.
-    security_token = None
+    security_key = None
     payment_api_url = None
     query_api_url = None
 
-    def __init__(self, security_token=None, payment_api_url=None, query_api_url=None):
-        if security_token:
-            self.security_token = security_token
+    def __init__(self, security_key=None, payment_api_url=None, query_api_url=None):
+        if security_key:
+            self.security_key = security_key
         if payment_api_url:
             self.payment_api_url
         if query_api_url:
             self.query_api_url
 
         # Ensure minimum required values are set.
-        if not self.security_token:
+        if not self.security_key:
             raise ValueError("NMI gateway requires the security token (key) to be set.")
         if not self.payment_api_url:
             raise ValueError("NMI gateway requires the payment API URL to be set.")

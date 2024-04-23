@@ -12,7 +12,7 @@ class Transactions(Nmi):
     def pay_with_token(self, payment_request) -> Dict[str, Union[Any, str]]:
         data = {
             "type": "sale",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "payment_token": payment_request["token"],
             "amount": payment_request["total"],
         }
@@ -28,7 +28,7 @@ class Transactions(Nmi):
     @postProcessingOutput
     def pay_with_customer_vault(self, payment_request) -> Dict[str, Union[Any, str]]:
         data = {
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "customer_vault_id": payment_request["user_id"],
             "amount": payment_request["total"],
             "initiated_by": "merchant",
@@ -49,7 +49,7 @@ class Transactions(Nmi):
             "type": "refund",
             "payment": "creditcard",
             "amount": 0,
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "transactionid": transaction_id,
         }
 

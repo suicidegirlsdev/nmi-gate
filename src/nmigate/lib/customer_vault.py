@@ -17,7 +17,7 @@ class CustomerVault(Nmi):
             "type": "validate",
             "initiated_by": "customer",
             "stored_credential_indicator": "stored",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "customer_vault_id": vault_request["id"] if vault_request["id"] else uid,
             "payment_token": vault_request["token"],
             "billing_id": vault_request["billing_id"],
@@ -30,7 +30,7 @@ class CustomerVault(Nmi):
     def update(self, id: str, billing_info) -> Dict[str, Union[Any, str]]:
         data = {
             "customer_vault": "update_customer",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "customer_vault_id": id,
         }
         data.update(billing_info)
@@ -41,7 +41,7 @@ class CustomerVault(Nmi):
     def validate(self, user_id: str) -> Dict[str, Union[Any, str]]:
         url = self.payment_api_url
         query = {
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "customer_vault_id": user_id,
             "amount": "0.00",
             "type": "validate",
@@ -53,7 +53,7 @@ class CustomerVault(Nmi):
     def get_billing_info_by_transaction_id(self, transaction_id) -> Any:
         url = self.query_api_url
         query = {
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "transaction_id": transaction_id,
         }
         response = requests.post(url=url, data=query)
@@ -64,7 +64,7 @@ class CustomerVault(Nmi):
         url = self.query_api_url
         query = {
             "report_type": "customer_vault",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "customer_vault_id": id,
         }
         response = requests.post(url=url, data=query)
@@ -74,7 +74,7 @@ class CustomerVault(Nmi):
     def delete(self, id: str) -> Dict[str, Union[Any, str]]:
         data = {
             "customer_vault": "delete_customer",
-            "security_key": self.security_token,
+            "security_key": self.security_key,
             "customer_vault_id": id,
         }
         response = requests.post(url=self.payment_api_url, data=data)
