@@ -1,9 +1,7 @@
 from typing import Any, Dict, Union
 
-import requests
-
 from nmigate.lib.nmi import Nmi
-from nmigate.util.wrappers import log, postProcessingOutput, postProcessXml
+from nmigate.util.wrappers import postProcessingOutput, postProcessXml
 
 
 class Plans(Nmi):
@@ -19,7 +17,7 @@ class Plans(Nmi):
             "day_of_month": data["day_of_month"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {
             "response": response,
             "req": data,
@@ -38,7 +36,7 @@ class Plans(Nmi):
             "day_of_month": data["day_of_month"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {
             "response": response,
             "req": data,
@@ -56,7 +54,7 @@ class Plans(Nmi):
             "day_frequency": data["day_frequency"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {
             "response": response,
             "req": data,
@@ -74,7 +72,7 @@ class Plans(Nmi):
             "day_frequency": data["day_frequency"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {
             "response": response,
             "req": data,
@@ -83,13 +81,11 @@ class Plans(Nmi):
 
     @postProcessXml
     def get_all_plans(self) -> Any:
-        url = self.query_api_url
         query = {
             "security_key": self.security_key,
             "report_type": "recurring_plans",
         }
-        response = requests.post(url=url, data=query)
-        return response
+        return self._post_query_api_request(query)
 
     # @postProcessXml
     def get_plan(self, id) -> Union[None, Dict[str, Any]]:

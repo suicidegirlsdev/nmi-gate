@@ -1,9 +1,7 @@
 from typing import Any, Dict, Union
 
-import requests
-
 from nmigate.lib.nmi import Nmi
-from nmigate.util.wrappers import log, postProcessingOutput
+from nmigate.util.wrappers import postProcessingOutput
 
 
 class Transactions(Nmi):
@@ -16,7 +14,7 @@ class Transactions(Nmi):
             "amount": payment_request["total"],
         }
         data.update(payment_request["billing_info"])
-        response = requests.post(self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {
             "response": response,
             "req": payment_request,
@@ -33,7 +31,7 @@ class Transactions(Nmi):
             "stored_credential_indicator": "used",
             "initial_transaction_id": payment_request["transaction_id"],
         }
-        response = requests.post(self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {
             "response": response,
             "req": payment_request,
@@ -50,7 +48,7 @@ class Transactions(Nmi):
             "transactionid": transaction_id,
         }
 
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {
             "response": response,
             "req": {"transaction_id": transaction_id},

@@ -1,3 +1,6 @@
+import requests
+
+
 class Nmi:
     # Can set these on the class at app init to avoid passing on every use.
     security_key = None
@@ -20,6 +23,15 @@ class Nmi:
         # This is not used with many of the API calls, but keeping it consistent for simplicity.
         if not self.query_api_url:
             raise ValueError("NMI gateway requires the query API URL to be set.")
+
+    def _post_request(self, url, data):
+        return requests.post(url=url, data=data)
+
+    def _post_payment_api_request(self, data):
+        return self._post_request(self.payment_api_url, data)
+
+    def _post_query_api_request(self, data):
+        return self._post_request(self.query_api_url, data)
 
 
 def config_gateway(security_key, payment_api_url, query_api_url):

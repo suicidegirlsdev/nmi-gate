@@ -1,7 +1,5 @@
 from typing import Any, Dict, Union
 
-import requests
-
 from nmigate.lib.nmi import Nmi
 from nmigate.lib.plans import Plans
 from nmigate.util.wrappers import postProcessingOutput, postProcessXml
@@ -33,7 +31,7 @@ class Subscriptions(Nmi):
         }
         data["customer_vault"] = "add_customer" if create_customer_vault else None
 
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {
             "response": response,
             "req": {
@@ -72,7 +70,7 @@ class Subscriptions(Nmi):
             del data["type"]
             del data["amount"]
 
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {
             "response": response,
             "req": request_sub,
@@ -102,7 +100,7 @@ class Subscriptions(Nmi):
             del data["type"]
             del data["amount"]
 
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {
             "response": response,
             "req": request_sub,
@@ -111,14 +109,12 @@ class Subscriptions(Nmi):
 
     @postProcessXml
     def get_info(self, id) -> Any:
-        url = self.query_api_url
         query = {
             "report_type": "recurring",
             "security_key": self.security_key,
             "subscription_id": id,
         }
-        response = requests.post(url=url, data=query)
-        return response
+        return self._post_query_api_request(query)
 
     @postProcessingOutput
     def delete(self, subscription_id):
@@ -127,7 +123,7 @@ class Subscriptions(Nmi):
             "security_key": self.security_key,
             "subscription_id": subscription_id,
         }
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         del data["security_key"]
         return {
             "response": response,
@@ -143,7 +139,7 @@ class Subscriptions(Nmi):
             "subscription_id": subscription_id,
             "paused_subscription": str(pause).lower(),
         }
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         del data["security_key"]
         return {
             "response": response,
@@ -178,7 +174,7 @@ class Subscriptions(Nmi):
         }
         data.update(billing_info)
 
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         del data["security_key"]
         return {
             "response": response,
@@ -211,7 +207,7 @@ class Subscriptions(Nmi):
         }
         data.update(billing_info)
 
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         del data["security_key"]
         return {
             "response": response,

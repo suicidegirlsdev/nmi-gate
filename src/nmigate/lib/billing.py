@@ -1,4 +1,3 @@
-import requests
 
 from nmigate.lib.nmi import Nmi
 from nmigate.util.wrappers import postProcessingOutput
@@ -14,7 +13,7 @@ class Billing(Nmi):
             "billing_id": billing_id,
         }
 
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {"response": response, "type": "validate_billing_id"}
 
     @postProcessingOutput
@@ -28,7 +27,7 @@ class Billing(Nmi):
             "billing_id": billing_req["billing_id"],
         }
         data.update(billing_req["billing_info"])
-        res = requests.post(url=self.payment_api_url, data=data)
+        res = self._post_payment_api_request(data)
         return {"response": res, "type": "add_billing_info"}
 
     @postProcessingOutput
@@ -42,7 +41,7 @@ class Billing(Nmi):
             "billing_id": billing_req["billing_id"],
         }
         data.update(billing_req["billing_info"])
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {"response": response, "type": "update_billing_info"}
 
     @postProcessingOutput
@@ -53,7 +52,7 @@ class Billing(Nmi):
             "customer_vault_id": user_id,
             "billing_id": billing_id,
         }
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {"response": response, "type": "delete_billing_info"}
 
     @postProcessingOutput
@@ -66,7 +65,7 @@ class Billing(Nmi):
             "billing_id": request.get("billing_id"),
         }
 
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {
             "response": response,
             "req": request,
@@ -82,5 +81,5 @@ class Billing(Nmi):
             "billing_id": billing_id,
             "priority": priority,
         }
-        response = requests.post(url=self.payment_api_url, data=data)
+        response = self._post_payment_api_request(data)
         return {"response": response, "type": "set_priority"}
