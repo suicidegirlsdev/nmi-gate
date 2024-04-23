@@ -42,7 +42,7 @@ class CustomerVault(Nmi):
         return {"response": response, "type": "update_customer_vault"}
 
     @postProcessingOutput
-    def validate(self, user_id: str)-> Dict[str, Union[Any, str]]:
+    def validate(self, user_id: str) -> Dict[str, Union[Any, str]]:
         url = "https://secure.networkmerchants.com/api/transact.php"
         query = {
             "security_key": self.security_token,
@@ -64,7 +64,7 @@ class CustomerVault(Nmi):
         return response
 
     @postProcessXml
-    def get_customer_info(self, id)-> Any:
+    def get_customer_info(self, id) -> Any:
         url = "https://secure.nmi.com/api/query.php"
         query = {
             "report_type": "customer_vault",
@@ -75,7 +75,7 @@ class CustomerVault(Nmi):
         return response
 
     @postProcessingOutput
-    def delete(self, id: str)-> Dict[str, Union[Any, str]]:
+    def delete(self, id: str) -> Dict[str, Union[Any, str]]:
         data = {
             "customer_vault": "delete_customer",
             "security_key": self.security_token,

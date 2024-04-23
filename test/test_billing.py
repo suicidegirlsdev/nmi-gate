@@ -54,14 +54,15 @@ class TestBilling(unittest.TestCase):
         res = billing.delete("1", "132")
         self.assertEqual(res["nm_response"]["response_code"], "100")
 
-
     def test_change_subscription_billing(self):
         billing = Billing("6457Thfj624V5r7WUwc5v6a68Zsd6YEm", "testOrg")
-        res = billing.change_subscription_billing({
-            "user_id": "1",
-            "billing_id": "12",
-            "subscription_id": "8965562207",
-        })
+        res = billing.change_subscription_billing(
+            {
+                "user_id": "1",
+                "billing_id": "12",
+                "subscription_id": "8965562207",
+            }
+        )
         print(res)
         self.assertEqual(res["nm_response"]["response_code"], "100")
 
