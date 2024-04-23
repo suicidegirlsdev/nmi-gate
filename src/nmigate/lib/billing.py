@@ -1,12 +1,10 @@
-from nmigate.util.wrappers import postProcessingOutput
-from nmigate.lib.nmi import Nmi
 import requests
+
+from nmigate.lib.nmi import Nmi
+from nmigate.util.wrappers import postProcessingOutput
 
 
 class Billing(Nmi):
-    def __init__(self, token, org):
-        super().__init__(token, org)
-
     @postProcessingOutput
     def validate_billing_id(self, customer_vault_id, billing_id):
         data = {

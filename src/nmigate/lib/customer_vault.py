@@ -1,16 +1,13 @@
-from nmigate.util.wrappers import log, postProcessingOutput, postProcessXml
-from nmigate.lib.nmi import Nmi
-import requests
-from typing import Union, Dict, Any
 import uuid
+from typing import Any, Dict, Union
+
+import requests
+
+from nmigate.lib.nmi import Nmi
+from nmigate.util.wrappers import postProcessingOutput, postProcessXml
 
 
 class CustomerVault(Nmi):
-    def __init__(self, token, org):
-        super().__init__(token, org)
-
-
-
     @postProcessingOutput
     def create(self, vault_request) -> Dict[str, Union[Any, str]]:
         uid = (uuid.uuid4().hex,)
