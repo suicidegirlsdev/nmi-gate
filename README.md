@@ -25,8 +25,8 @@ This package was build with the unique intention to make the integration with th
 
 ### Init the gateway settings (new for fork).
 
-# This needs to be done before any API requests are made, or can
-# be passed in when creating each instance (ie, the secret_key is passed in the examples still).
+This needs to be done before any API requests are made, or can
+be passed in when creating each instance (ie, the secret_key is passed in the examples still).
 ```python
 from nmigate import config_gateway
 config_gateway(
