@@ -1,5 +1,20 @@
 # NMI Gateway
 
+## This fork:
+This fork mainly changes the lib to allow it to work with other NMI-like,
+gateways since NMI seems to offer their API as a white label service with different
+URLs. Just need to use the correct API urls (maybe? It will probably work at the nmi
+URLs, too). This makes the URLs requisite, but can set them on the nmi class.
+
+This fork also makes some other changes, such as doing some quick ruff formatting
+and other tweaks to make it more compatible with our own specific usage (and not
+necessarily of value to anyone else), including removing the "org" concept entirely
+(not used by the API or us, separate concern).
+
+Notes on testing at the end of this readme are ours.
+
+## Original Heading:
+
 This is a nmi handy package to interact with the nmi gateway endpoints, you can find the original documentation here:
 https://secure.networkmerchants.com/gw/merchants/resources/integration/integration_portal.php#cv_variables
 
@@ -15,10 +30,9 @@ This package was build with the unique intention to make the integration with th
 from nmigate.lib.customer_vault import CustomerVault
 
 secret_key = 'your secret key'
-org = 'your org'
 token = 'your test token here' # test token "00000000-000000-000000-000000000000"
 
-customer_vault = CustomerVault(secret_key, org)
+customer_vault = CustomerVault(secret_key)
     result = customer_vault.create_customer_vault({
         "id": "",
         "token": token,
@@ -43,10 +57,9 @@ customer_vault = CustomerVault(secret_key, org)
 from nmigate.lib.customer_vault import CustomerVault
 
 secret_key = 'your secret key'
-org = 'your org'
 transaction_id = 'transaction id '
 
-customer_vault = CustomerVault(secret_key, org)
+customer_vault = CustomerVault(secret_key)
 result = customer_vault.get_billing_info_by_transaction_id(transaction_id)
 ```
 
@@ -55,12 +68,11 @@ result = customer_vault.get_billing_info_by_transaction_id(transaction_id)
 ### Get all plans
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 
-plansObj = Plans(secret_key, org)
+plansObj = Plans(secret_key)
 response = plansObj.get_all_plans()
 plans = response['nm_response']['plan']
 
@@ -69,13 +81,12 @@ plans = response['nm_response']['plan']
 ### Get plan
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 plan_id = 'your plan id'
 
-plans = Plans(secret_key, org)
+plans = Plans(secret_key)
 response = plans.get_plan(plan_id)
 
 ```
@@ -83,12 +94,11 @@ response = plans.get_plan(plan_id)
 ### Add plan using frequency configuration
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 
-plans = Plans(secret_key, org)
+plans = Plans(secret_key)
 response = plans.add_plan_by_day_frequency({
     'plan_amount': '10.00',
     'plan_name': 'test',
@@ -102,12 +112,11 @@ response = plans.add_plan_by_day_frequency({
 ### Edit day frequency plan
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 
-plans = Plans(secret_key, org)
+plans = Plans(secret_key)
 response = plans.edit_plan_by_day_frequency({
     "recurring": "edit_plan",
     'plan_amount': '10.00',
@@ -122,12 +131,11 @@ response = plans.edit_plan_by_day_frequency({
 ### Add plan using month config
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 
-plans = Plans(secret_key, org)
+plans = Plans(secret_key)
 response = plans.add_plan_by_month_config({
     'plan_amount': '10.00',
     'plan_name': 'test',
@@ -142,12 +150,11 @@ response = plans.add_plan_by_month_config({
 ### Edit plan using month config
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
-org = 'your org'
 
-plans = Plans(secret_key, org)
+plans = Plans(secret_key)
 response = plans.edit_plan_by_month_config({
     'plan_amount': '10.00',
     'plan_name': 'test',
@@ -166,10 +173,9 @@ response = plans.edit_plan_by_month_config({
 from nmigate.lib.customer_vault import CustomerVault
 
 secret_key = 'your secret key'
-org = 'your org'
 subscription_id='customer vault id'
 
-subscriptions = Subscriptions(secret_key, org)
+subscriptions = Subscriptions(secret_key)
 info = subscriptions.get_info(subscription_id)
 print(result)
 ```
@@ -182,10 +188,9 @@ If total_amount = 0 then its a simple subscription, if total_amount > 0 then its
 from nmigate.lib.customer_vault import CustomerVault
 
 secret_key = 'your secret key'
-org = 'your org'
 customer_vault_id='customer vault id'
 
-subscriptions = Subscriptions(secret_key, org)
+subscriptions = Subscriptions(secret_key)
 result = subscriptions.custom_sale_using_vault(plan_id = customer_vault_id, customer_vault_id=customer_vault_id, create_customer_vault=False)
 print(result)
 ```
@@ -196,9 +201,8 @@ print(result)
 from nmigate.lib.subscriptions import Subscriptions
 
 secret_key = 'your secret key'
-org = 'your org'
 
-subscriptions = Subscriptions(secret_key, org)
+subscriptions = Subscriptions(secret_key)
 result = subscriptions.custom_sale_using_vault_month_frequency(request_sub = {
     "user_id": "1",
     "total_amount": "11",
@@ -219,9 +223,8 @@ print(result)
 from nmigate.lib.subscriptions import Subscriptions
 
 secret_key = 'your secret key'
-org = 'your org'
 
-subscriptions = Subscriptions(secret_key, org)
+subscriptions = Subscriptions(secret_key)
 result = subscriptions.custom_with_sale_and_vault_day_frequency(request_sub = {
     "user_id": "1",
     "total_amount": "14",
@@ -240,10 +243,9 @@ print(result)
 from nmigate.lib.subscriptions import Subscriptions
 
 secret_key = 'your secret key'
-org = 'your org'
 subscription_id = 'your subscription_id'
 
-subscriptions = Subscriptions(secret_key, org)
+subscriptions = Subscriptions(secret_key)
 info = subscriptions.delete_subscription(subscription_id)
 ```
 
@@ -253,10 +255,21 @@ info = subscriptions.delete_subscription(subscription_id)
 from nmigate.lib.subscriptions import Subscriptions
 
 secret_key = 'your secret key'
-org = 'your org'
 subscription_id = 'your subscription_id'
 pause=True # True to pause, False to unpause
 
-transactions = Subscriptions(secret_key, org)
+transactions = Subscriptions(secret_key)
 result = transactions.pause_subscription(subscription_id, pause)
 ```
+
+
+#### Tests:
+To run tests in a cloned directory, you will need to set an appropriate PYTHONPATH env
+pointed at the "src" dir for the imports to work:
+```bash
+PYTHONPATH="${PYTHONPATH}:/path/to/cloned/nmigate/src"
+```
+Note that the project is "nmi-gate" so make sure the above is correct if used that for
+the dir.
+Warning: tests run against the live API. They are set to use the "demo" key now but
+still don't pass for various reasons, some seem outdated. Left for now.

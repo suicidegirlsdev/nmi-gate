@@ -4,6 +4,7 @@ from datetime import datetime
 import xmltodict
 from typing import Union, Dict, Any
 
+
 def log(func):
     @functools.wraps(func)
     def wrapper(*args, **kwargs):
@@ -39,7 +40,7 @@ def postProcessXml(func):
 
 def postProcessingOutput(func):
     @functools.wraps(func)
-    def wrapper(*args, **kwargs)  -> Dict[str, Union[str, Dict[str, str]]]:
+    def wrapper(*args, **kwargs) -> Dict[str, Union[str, Dict[str, str]]]:
         # Before
         nmi_operation = func(*args, **kwargs)
 
