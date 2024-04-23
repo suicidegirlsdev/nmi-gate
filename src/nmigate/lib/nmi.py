@@ -20,3 +20,9 @@ class Nmi:
         # This is not used with many of the API calls, but keeping it consistent for simplicity.
         if not self.query_api_url:
             raise ValueError("NMI gateway requires the query API URL to be set.")
+
+
+def config_gateway(security_key, payment_api_url, query_api_url):
+    Nmi.security_key = security_key
+    Nmi.payment_api_url = payment_api_url
+    Nmi.query_api_url = query_api_url
