@@ -17,9 +17,7 @@ class Transactions(Nmi):
             "amount": payment_request["total"],
         }
         data.update(payment_request["billing_info"])
-        response = requests.post(
-            "https://secure.networkmerchants.com/api/transact.php", data=data
-        )
+        response = requests.post(self.payment_api_url, data=data)
         return {
             "response": response,
             "req": payment_request,
@@ -37,9 +35,7 @@ class Transactions(Nmi):
             "stored_credential_indicator": "used",
             "initial_transaction_id": payment_request["transaction_id"],
         }
-        response = requests.post(
-            "https://secure.networkmerchants.com/api/transact.php", data=data
-        )
+        response = requests.post(self.payment_api_url, data=data)
         return {
             "response": response,
             "req": payment_request,
@@ -57,9 +53,7 @@ class Transactions(Nmi):
             "transactionid": transaction_id,
         }
 
-        response = requests.post(
-            url="https://secure.networkmerchants.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         return {
             "response": response,
             "req": {"transaction_id": transaction_id},

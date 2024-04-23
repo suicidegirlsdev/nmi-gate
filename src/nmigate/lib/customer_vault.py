@@ -23,9 +23,7 @@ class CustomerVault(Nmi):
             "billing_id": vault_request["billing_id"],
         }
         data.update(vault_request["billing_info"])
-        response = requests.post(
-            url="https://secure.nmi.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         return {"response": response, "type": "create_customer_vault"}
 
     @postProcessingOutput
@@ -36,14 +34,12 @@ class CustomerVault(Nmi):
             "customer_vault_id": id,
         }
         data.update(billing_info)
-        response = requests.post(
-            url="https://secure.nmi.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         return {"response": response, "type": "update_customer_vault"}
 
     @postProcessingOutput
     def validate(self, user_id: str) -> Dict[str, Union[Any, str]]:
-        url = "https://secure.networkmerchants.com/api/transact.php"
+        url = self.payment_api_url
         query = {
             "security_key": self.security_token,
             "customer_vault_id": user_id,
@@ -55,7 +51,7 @@ class CustomerVault(Nmi):
 
     @postProcessXml
     def get_billing_info_by_transaction_id(self, transaction_id) -> Any:
-        url = "https://secure.nmi.com/api/query.php"
+        url = self.query_api_url
         query = {
             "security_key": self.security_token,
             "transaction_id": transaction_id,
@@ -65,7 +61,7 @@ class CustomerVault(Nmi):
 
     @postProcessXml
     def get_customer_info(self, id) -> Any:
-        url = "https://secure.nmi.com/api/query.php"
+        url = self.query_api_url
         query = {
             "report_type": "customer_vault",
             "security_key": self.security_token,
@@ -81,7 +77,5 @@ class CustomerVault(Nmi):
             "security_key": self.security_token,
             "customer_vault_id": id,
         }
-        response = requests.post(
-            url="https://secure.nmi.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         return {"response": response, "type": "delete_customer_vault"}

@@ -33,9 +33,7 @@ class Subscriptions(Nmi):
         }
         data["customer_vault"] = "add_customer" if create_customer_vault else None
 
-        response = requests.post(
-            url="https://secure.networkmerchants.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         return {
             "response": response,
             "req": {
@@ -74,9 +72,7 @@ class Subscriptions(Nmi):
             del data["type"]
             del data["amount"]
 
-        response = requests.post(
-            url="https://secure.networkmerchants.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         return {
             "response": response,
             "req": request_sub,
@@ -106,9 +102,7 @@ class Subscriptions(Nmi):
             del data["type"]
             del data["amount"]
 
-        response = requests.post(
-            url="https://secure.networkmerchants.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         return {
             "response": response,
             "req": request_sub,
@@ -117,7 +111,7 @@ class Subscriptions(Nmi):
 
     @postProcessXml
     def get_info(self, id) -> Any:
-        url = "https://secure.nmi.com/api/query.php"
+        url = self.query_api_url
         query = {
             "report_type": "recurring",
             "security_key": self.security_token,
@@ -133,9 +127,7 @@ class Subscriptions(Nmi):
             "security_key": self.security_token,
             "subscription_id": subscription_id,
         }
-        response = requests.post(
-            url="https://secure.networkmerchants.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         del data["security_key"]
         return {
             "response": response,
@@ -151,9 +143,7 @@ class Subscriptions(Nmi):
             "subscription_id": subscription_id,
             "paused_subscription": str(pause).lower(),
         }
-        response = requests.post(
-            url="https://secure.networkmerchants.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         del data["security_key"]
         return {
             "response": response,
@@ -188,9 +178,7 @@ class Subscriptions(Nmi):
         }
         data.update(billing_info)
 
-        response = requests.post(
-            url="https://secure.networkmerchants.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         del data["security_key"]
         return {
             "response": response,
@@ -223,9 +211,7 @@ class Subscriptions(Nmi):
         }
         data.update(billing_info)
 
-        response = requests.post(
-            url="https://secure.networkmerchants.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         del data["security_key"]
         return {
             "response": response,

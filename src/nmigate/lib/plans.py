@@ -20,9 +20,7 @@ class Plans(Nmi):
             "day_of_month": data["day_of_month"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(
-            url="https://secure.nmi.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         return {
             "response": response,
             "req": data,
@@ -42,9 +40,7 @@ class Plans(Nmi):
             "day_of_month": data["day_of_month"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(
-            url="https://secure.nmi.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         return {
             "response": response,
             "req": data,
@@ -63,9 +59,7 @@ class Plans(Nmi):
             "day_frequency": data["day_frequency"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(
-            url="https://secure.nmi.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         return {
             "response": response,
             "req": data,
@@ -84,9 +78,7 @@ class Plans(Nmi):
             "day_frequency": data["day_frequency"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(
-            url="https://secure.nmi.com/api/transact.php", data=data
-        )
+        response = requests.post(url=self.payment_api_url, data=data)
         return {
             "response": response,
             "req": data,
@@ -95,7 +87,7 @@ class Plans(Nmi):
 
     @postProcessXml
     def get_all_plans(self) -> Any:
-        url = "https://secure.nmi.com/api/query.php"
+        url = self.query_api_url
         query = {
             "security_key": self.security_token,
             "report_type": "recurring_plans",
