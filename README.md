@@ -55,7 +55,7 @@ result = customer_vault.get_billing_info_by_transaction_id(transaction_id)
 ### Get all plans
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
 org = 'your org'
@@ -69,7 +69,7 @@ plans = response['nm_response']['plan']
 ### Get plan
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
 org = 'your org'
@@ -83,7 +83,7 @@ response = plans.get_plan(plan_id)
 ### Add plan using frequency configuration
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
 org = 'your org'
@@ -102,7 +102,7 @@ response = plans.add_plan_by_day_frequency({
 ### Edit day frequency plan
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
 org = 'your org'
@@ -122,7 +122,7 @@ response = plans.edit_plan_by_day_frequency({
 ### Add plan using month config
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
 org = 'your org'
@@ -142,7 +142,7 @@ response = plans.add_plan_by_month_config({
 ### Edit plan using month config
 
 ```python
-from nmigate.src.nmigate.lib.plans import Plans
+from nmigate.lib.plans import Plans
 
 secret_key = 'your secret key'
 org = 'your org'

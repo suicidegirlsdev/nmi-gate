@@ -1,12 +1,13 @@
 import unittest
-from nmigate.src.nmigate.lib.subscriptions import Subscriptions
+from nmigate.lib.subscriptions import Subscriptions
+
 
 class TestSubs(unittest.TestCase):
     def test_get_plans(self):
         subscriptions = Subscriptions('4QaH5w77U2k843fu68EuB34c4M5KJ7r3', 'testOrg')
         info = subscriptions.get_info("8462293105")
         self.assertEqual(info['nm_response']['subscription']["subscription_id"], "8462293105")
-    
+
 
     def test_custom_sale_using_vault(self):
         subscriptions = Subscriptions('4QaH5w77U2k843fu68EuB34c4M5KJ7r3', 'testOrg')
@@ -49,8 +50,7 @@ class TestSubs(unittest.TestCase):
         subscriptions = Subscriptions('4QaH5w77U2k843fu68EuB34c4M5KJ7r3', 'testOrg')
         info = subscriptions.delete_subscription("8462218027")
         self.assertEqual(info['nm_response']['response_code'], 100)
-    
-    
+
     def test_pause_subscription(self):
         transactions = Subscriptions('4QaH5w77U2k843fu68EuB34c4M5KJ7r3', 'testOrg')
         result = transactions.pause_subscription("8926648990", True)
