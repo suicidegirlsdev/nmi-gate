@@ -11,7 +11,8 @@ and other tweaks to make it more compatible with our own specific usage (and not
 necessarily of value to anyone else), including removing the "org" concept entirely
 (not used by the API or us, separate concern).
 
-Notes on testing at the end of this readme are ours.
+The original examples below were quickly updated but are not guaranteed
+(some seemed outdated in original).
 
 ## Original Heading:
 
@@ -22,18 +23,31 @@ This package was build with the unique intention to make the integration with th
 
 ## Examples
 
+### Init the gateway settings (new for fork).
+
+# This needs to be done before any API requests are made, or can
+# be passed in when creating each instance (ie, the secret_key is passed in the examples still).
+```python
+from nmigate import config_gateway
+config_gateway(
+    '<your security key>',
+    'https://<whitelabel>.transactiongateway.com/api/transact.php',
+    'https://<whitelabel>.transactiongateway.com/api/query.php'
+)
+```
+
 ### Customer Vault methods
 
 #### Create customer vault
 
 ```python
-from nmigate.lib.customer_vault import CustomerVault
+from nmigate import CustomerVault
 
 secret_key = 'your secret key'
 token = 'your test token here' # test token "00000000-000000-000000-000000000000"
 
 customer_vault = CustomerVault(secret_key)
-    result = customer_vault.create_customer_vault({
+    result = customer_vault.create({
         "id": "",
         "token": token,
         "billing_id": "",
@@ -54,7 +68,7 @@ customer_vault = CustomerVault(secret_key)
 #### Get billing info by transaction id
 
 ```python
-from nmigate.lib.customer_vault import CustomerVault
+from nmigate import CustomerVault
 
 secret_key = 'your secret key'
 transaction_id = 'transaction id '
@@ -68,7 +82,7 @@ result = customer_vault.get_billing_info_by_transaction_id(transaction_id)
 ### Get all plans
 
 ```python
-from nmigate.lib.plans import Plans
+from nmigate import Plans
 
 secret_key = 'your secret key'
 
@@ -81,7 +95,7 @@ plans = response['nm_response']['plan']
 ### Get plan
 
 ```python
-from nmigate.lib.plans import Plans
+from nmigate import Plans
 
 secret_key = 'your secret key'
 plan_id = 'your plan id'
@@ -94,7 +108,7 @@ response = plans.get_plan(plan_id)
 ### Add plan using frequency configuration
 
 ```python
-from nmigate.lib.plans import Plans
+from nmigate import Plans
 
 secret_key = 'your secret key'
 
@@ -112,7 +126,7 @@ response = plans.add_plan_by_day_frequency({
 ### Edit day frequency plan
 
 ```python
-from nmigate.lib.plans import Plans
+from nmigate import Plans
 
 secret_key = 'your secret key'
 
@@ -131,7 +145,7 @@ response = plans.edit_plan_by_day_frequency({
 ### Add plan using month config
 
 ```python
-from nmigate.lib.plans import Plans
+from nmigate import Plans
 
 secret_key = 'your secret key'
 
@@ -150,7 +164,7 @@ response = plans.add_plan_by_month_config({
 ### Edit plan using month config
 
 ```python
-from nmigate.lib.plans import Plans
+from nmigate import Plans
 
 secret_key = 'your secret key'
 
@@ -170,7 +184,7 @@ response = plans.edit_plan_by_month_config({
 #### Get Subscriptions
 
 ```python
-from nmigate.lib.customer_vault import CustomerVault
+from nmigate import CustomerVault
 
 secret_key = 'your secret key'
 subscription_id='customer vault id'
@@ -185,7 +199,7 @@ print(result)
 If total_amount = 0 then its a simple subscription, if total_amount > 0 then its a subscription with sale
 
 ```python
-from nmigate.lib.customer_vault import CustomerVault
+from nmigate import CustomerVault
 
 secret_key = 'your secret key'
 customer_vault_id='customer vault id'
@@ -198,7 +212,7 @@ print(result)
 #### Custome Subscription + sale, using vault number and month frequency configuration
 
 ```python
-from nmigate.lib.subscriptions import Subscriptions
+from nmigate import Subscriptions
 
 secret_key = 'your secret key'
 
@@ -220,7 +234,7 @@ print(result)
 #### Custome Subscription + sale, using vault number and day frequency configuration
 
 ```python
-from nmigate.lib.subscriptions import Subscriptions
+from nmigate import Subscriptions
 
 secret_key = 'your secret key'
 
@@ -240,7 +254,7 @@ print(result)
 #### Delete subscription
 
 ```python
-from nmigate.lib.subscriptions import Subscriptions
+from nmigate import Subscriptions
 
 secret_key = 'your secret key'
 subscription_id = 'your subscription_id'
@@ -252,7 +266,7 @@ info = subscriptions.delete_subscription(subscription_id)
 #### Pause/resume Subscription
 
 ```python
-from nmigate.lib.subscriptions import Subscriptions
+from nmigate import Subscriptions
 
 secret_key = 'your secret key'
 subscription_id = 'your subscription_id'
@@ -263,7 +277,7 @@ result = transactions.pause_subscription(subscription_id, pause)
 ```
 
 
-#### Tests:
+#### Tests (new for fork):
 To run tests in a cloned directory, you will need to set an appropriate PYTHONPATH env
 pointed at the "src" dir for the imports to work:
 ```bash
