@@ -7,7 +7,6 @@ from nmigate.util.wrappers import log, postProcessingOutput, postProcessXml
 
 
 class Plans(Nmi):
-    @log
     @postProcessingOutput
     def add_plan_by_month_config(self, data) -> Dict[str, Union[Any, str]]:
         data = {
@@ -27,7 +26,6 @@ class Plans(Nmi):
             "type": "add_plan_by_month_config",
         }
 
-    @log
     @postProcessingOutput
     def edit_plan_by_month_config(self, data) -> Dict[str, Union[Any, str]]:
         data = {
@@ -47,7 +45,6 @@ class Plans(Nmi):
             "type": "edit_plan_by_month_config",
         }
 
-    @log
     @postProcessingOutput
     def add_plan_by_day_frequency(self, data) -> Dict[str, Union[Any, str]]:
         data = {
@@ -66,7 +63,6 @@ class Plans(Nmi):
             "type": "add_plan_by_day_frequency",
         }
 
-    @log
     @postProcessingOutput
     def edit_plan_by_day_frequency(self, data) -> Dict[str, Union[Any, str]]:
         data = {

@@ -1,17 +1,9 @@
 import functools
-from urllib.parse import parse_qs, urlparse
 from datetime import datetime
+from typing import Any, Dict, Union
+from urllib.parse import parse_qs, urlparse
+
 import xmltodict
-from typing import Union, Dict, Any
-
-
-def log(func):
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs):
-        op_result = func(*args, **kwargs)
-        return op_result
-
-    return wrapper
 
 
 def postProcessXml(func):

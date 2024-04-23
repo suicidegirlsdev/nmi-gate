@@ -7,7 +7,6 @@ from nmigate.util.wrappers import log, postProcessingOutput
 
 
 class Transactions(Nmi):
-    @log
     @postProcessingOutput
     def pay_with_token(self, payment_request) -> Dict[str, Union[Any, str]]:
         data = {
@@ -24,7 +23,6 @@ class Transactions(Nmi):
             "type": "pay_with_token",
         }
 
-    @log
     @postProcessingOutput
     def pay_with_customer_vault(self, payment_request) -> Dict[str, Union[Any, str]]:
         data = {
@@ -42,7 +40,6 @@ class Transactions(Nmi):
             "type": "pay_with_customer_vault",
         }
 
-    @log
     @postProcessingOutput
     def refund(self, transaction_id) -> Dict[str, Union[Any, str]]:
         data = {
