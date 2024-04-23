@@ -1,10 +1,11 @@
-from nmigate.lib.transactions import Transactions
 import unittest
+
+from nmigate.lib.transactions import Transactions
 
 
 class TestTransactions(unittest.TestCase):
     def test_pay_with_token(self):
-        transactions = Transactions('4QaH5w77U2k843fu68EuB34c4M5KJ7r3', 'testOrg')
+        transactions = Transactions("6457Thfj624V5r7WUwc5v6a68Zsd6YEm", "testOrg")
         result = transactions.pay_with_token(
             {
                 "token": "00000000-000000-000000-000000000000",
@@ -27,7 +28,7 @@ class TestTransactions(unittest.TestCase):
 
 
     def test_pay_with_customer_vault(self):
-        transactions = Transactions('4QaH5w77U2k843fu68EuB34c4M5KJ7r3', 'testOrg')
+        transactions = Transactions("6457Thfj624V5r7WUwc5v6a68Zsd6YEm", "testOrg")
         result = transactions.pay_with_customer_vault({
             "user_id": "1",
             "total": 10,
@@ -36,7 +37,7 @@ class TestTransactions(unittest.TestCase):
 
 
     def test_refound(self):
-        transactions = Transactions('4QaH5w77U2k843fu68EuB34c4M5KJ7r3', 'testOrg')
+        transactions = Transactions("6457Thfj624V5r7WUwc5v6a68Zsd6YEm", "testOrg")
         result = transactions.refund("8926614344")
         self.assertEqual(result['nm_response']['response_code'], "100")
 
