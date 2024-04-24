@@ -24,7 +24,7 @@ class TestTransactions(unittest.TestCase):
                 },
             }
         )
-        self.assertEqual(result["nm_response"]["response_code"], "100")
+        self.assertEqual(result["response_code"], "100")
 
     def test_pay_with_customer_vault(self):
         transactions = Transactions("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
@@ -34,9 +34,9 @@ class TestTransactions(unittest.TestCase):
                 "total": 10,
             }
         )
-        self.assertEqual(result["nm_response"]["response_code"], "100")
+        self.assertEqual(result["response_code"], "100")
 
     def test_refound(self):
         transactions = Transactions("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         result = transactions.refund("8926614344")
-        self.assertEqual(result["nm_response"]["response_code"], "100")
+        self.assertEqual(result["response_code"], "100")

@@ -7,7 +7,7 @@ class TestPlans(unittest.TestCase):
     def test_get_plans(self):
         plansObj = Plans("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         response = plansObj.get_all_plans()
-        plans = response["nm_response"]["plan"]
+        plans = response["plan"]
         self.assertGreater(len(plans), 0)
 
     def test_get_plan(self):
@@ -26,7 +26,7 @@ class TestPlans(unittest.TestCase):
                 "plan_payments": "0",
             }
         )
-        self.assertEqual(response["nm_response"]["response_code"][0], "100")
+        self.assertEqual(response["response_code"][0], "100")
         self.assertEqual(response["successfull"], True)
 
     def test_edit_plan_by_day_frequency(self):
@@ -41,7 +41,7 @@ class TestPlans(unittest.TestCase):
                 "plan_payments": "0",
             }
         )
-        self.assertEqual(response["nm_response"]["response_code"][0], "100")
+        self.assertEqual(response["response_code"][0], "100")
         self.assertEqual(response["successfull"], True)
 
     def test_add_plan_by_month_config(self):
@@ -57,7 +57,7 @@ class TestPlans(unittest.TestCase):
             }
         )
 
-        self.assertEqual(response["nm_response"]["response_code"][0], "100")
+        self.assertEqual(response["response_code"][0], "100")
         self.assertEqual(response["successfull"], True)
 
     def test_edit_plan_by_month_config(self):
@@ -73,7 +73,7 @@ class TestPlans(unittest.TestCase):
             }
         )
 
-        self.assertEqual(response["nm_response"]["response_code"][0], "100")
+        self.assertEqual(response["response_code"][0], "100")
         self.assertEqual(response["successfull"], True)
 
 

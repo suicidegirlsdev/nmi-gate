@@ -24,7 +24,7 @@ class TestBilling(unittest.TestCase):
                 },
             }
         )
-        self.assertEqual(res["nm_response"]["response_code"], "100")
+        self.assertEqual(res["response_code"], "100")
 
     def test_update(self):
         billing = Billing("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
@@ -47,12 +47,12 @@ class TestBilling(unittest.TestCase):
             }
         )
         print(res)
-        self.assertEqual(res["nm_response"]["response_code"], "100")
+        self.assertEqual(res["response_code"], "100")
 
     def test_delete(self):
         billing = Billing("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         res = billing.delete("1", "132")
-        self.assertEqual(res["nm_response"]["response_code"], "100")
+        self.assertEqual(res["response_code"], "100")
 
     def test_change_subscription_billing(self):
         billing = Billing("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
@@ -64,10 +64,10 @@ class TestBilling(unittest.TestCase):
             }
         )
         print(res)
-        self.assertEqual(res["nm_response"]["response_code"], "100")
+        self.assertEqual(res["response_code"], "100")
 
     def test_set_priority(self):
         billing = Billing("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         res = billing.set_priority("1", "f00da1e2689d4dbca6d8c611e62e824d", "1")
         print(res)
-        self.assertEqual(res["nm_response"]["response_code"], "100")
+        self.assertEqual(res["response_code"], "100")

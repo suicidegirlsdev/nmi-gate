@@ -24,20 +24,18 @@ class TestCustomerVault(unittest.TestCase):
                 },
             }
         )
-        self.assertEqual(result["nm_response"]["response_code"][0], 100)
+        self.assertEqual(result["response_code"][0], 100)
 
     def test_get_billing_info_by_transaction_id(self):
         customer_vault = CustomerVault("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         result = customer_vault.get_billing_info_by_transaction_id("8926649228")
-        self.assertEqual(
-            result["nm_response"]["transaction"]["transaction_id"], "8926649228"
-        )
+        self.assertEqual(result["transaction"]["transaction_id"], "8926649228")
 
     def test_get_customer_info(self):
         customer_vault = CustomerVault("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         result = customer_vault.get_customer_info("1")
         self.assertEqual(
-            result["nm_response"]["customer_vault"]["customer"]["customer_vault_id"],
+            result["customer_vault"]["customer"]["customer_vault_id"],
             "1",
         )
 
