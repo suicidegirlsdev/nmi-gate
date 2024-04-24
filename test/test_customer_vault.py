@@ -33,7 +33,7 @@ class TestCustomerVault(unittest.TestCase):
             result["nm_response"]["transaction"]["transaction_id"], "8926649228"
         )
 
-    def test_get_billing_info_by_transaction_id(self):
+    def test_get_customer_info(self):
         customer_vault = CustomerVault("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
         result = customer_vault.get_customer_info("1")
         self.assertEqual(

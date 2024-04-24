@@ -41,23 +41,21 @@ class Nmi:
     def _parse_payment_api_response(self, response):
         """convert to dict and add a "successful" key based on response code."""
         response_dict = dict(parse_qsl(response.text)) if response.text else {}
-
-        if response_dict["response_code"] == "100":
-            response_dict["successful"] = True
-        else:
-            response_dict["successful"] = False
+        response_dict["successful"] = response_dict["response_code"] == "100"
         return response
 
     def _parse_query_api_response(self, response):
-        # Copied from original wrappers, left as is.
+        # Copied from original wrappers, largely left as is.
         xml_string = response.text.replace('<?xml version="1.0" encoding="UTF-8"?>', "")
         # Define custom entities for é, ï, and ü characters
-        entity_definitions = "<!DOCTYPE root [\n"
-        entity_definitions += '<!ENTITY eacute "&#233;">\n'
-        entity_definitions += '<!ENTITY iuml "&#239;">\n'
-        entity_definitions += '<!ENTITY uuml "&#252;">\n'
-        entity_definitions += '<!ENTITY rsquo "&#x2019;">\n'
-        entity_definitions += "]>\n"
+        entity_definitions = (
+            "<!DOCTYPE root [\n"
+            '<!ENTITY eacute "&#233;">\n'
+            '<!ENTITY iuml "&#239;">\n'
+            '<!ENTITY uuml "&#252;">\n'
+            '<!ENTITY rsquo "&#x2019;">\n'
+            "]>\n"
+        )
         # Parse XML string into an Element object
         response_dict = xmltodict.parse(entity_definitions + xml_string)
         return response_dict
