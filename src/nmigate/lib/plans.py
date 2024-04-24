@@ -63,7 +63,7 @@ class Plans(Nmi):
 
     def get_plan(self, id) -> Union[None, Dict[str, Any]]:
         plans = self.get_all_plans()
-        for plan in plans["nm_response"]["plan"]:
+        for plan in plans["plan"]:
             if plan["plan_id"] == id:
                 return plan
 

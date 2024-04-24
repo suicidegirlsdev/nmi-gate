@@ -88,7 +88,7 @@ secret_key = 'your secret key'
 
 plansObj = Plans(secret_key)
 response = plansObj.get_all_plans()
-plans = response['nm_response']['plan']
+plans = response['plan']
 
 ```
 
