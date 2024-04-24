@@ -5,9 +5,9 @@ from nmigate.lib.plans import Plans
 
 
 class Subscriptions(Nmi):
-    def __init__(self, token):
-        super().__init__(token)
-        self.plans = Plans(token)
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.plans = Plans(*args, **kwargs)
 
     def custom_sale_using_vault(
         self, plan_id, customer_vault_id, transaction_id, create_customer_vault=False
@@ -100,7 +100,7 @@ class Subscriptions(Nmi):
         }
         return self._post_payment_api_request(data)
 
-    def pause_subscription(self, subscription_id, pause):
+    def pause(self, subscription_id, pause):
         data = {
             "recurring": "update_subscription",
             "security_key": self.security_key,
