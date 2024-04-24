@@ -42,7 +42,7 @@ class Nmi:
         """convert to dict and add a "successful" key based on response code."""
         response_dict = dict(parse_qsl(response.text)) if response.text else {}
         response_dict["successful"] = response_dict["response_code"] == "100"
-        return response
+        return response_dict
 
     def _parse_query_api_response(self, response):
         # Copied from original wrappers, largely left as is.
@@ -58,7 +58,7 @@ class Nmi:
         )
         # Parse XML string into an Element object
         response_dict = xmltodict.parse(entity_definitions + xml_string)
-        return response_dict
+        return response_dict.get("nm_response", response_dict)
 
 
 def config_gateway(security_key, payment_api_url, query_api_url):
