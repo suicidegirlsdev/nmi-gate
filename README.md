@@ -1,15 +1,19 @@
 # NMI Gateway
 
-## This fork:
-This fork mainly changes the lib to allow it to work with other NMI-like,
+## This fork has a LOT of major breaking changes.
+The main goal was to allow the fork to work with other NMI-like,
 gateways since NMI seems to offer their API as a white label service with different
 URLs. Just need to use the correct API urls (maybe? It will probably work at the nmi
-URLs, too). This makes the URLs requisite, but can set them on the nmi class.
+URLs, too). This fork makes the URLs requisite, but can set them on the Nmi class.
 
-This fork also makes some other changes, such as doing some quick ruff formatting
+This fork makes a lot of other changes as well, such as doing some quick ruff formatting
 and other tweaks to make it more compatible with our own specific usage (and not
 necessarily of value to anyone else), including removing the "org" concept entirely
-(not used by the API or us, separate concern).
+(not used by the API AFAIK or us, separate concern). It also removes the response
+"wrapper" from responses, changes the arguments to most of the class inits, etc, etc.
+
+No attempt was made to maintain typing, and minimal effort was put into updating
+subscription/plans, since no intent to use it at this point.
 
 The original examples below were quickly updated but are not guaranteed
 (some seemed outdated in original).
@@ -43,15 +47,12 @@ config_gateway(
 ```python
 from nmigate import CustomerVault
 
-secret_key = 'your secret key'
-token = 'your test token here' # test token "00000000-000000-000000-000000000000"
+payment_token = 'your test token here' # test token "00000000-000000-000000-000000000000"
 
-customer_vault = CustomerVault(secret_key)
-    result = customer_vault.create({
-        "id": "",
-        "token": token,
-        "billing_id": "",
-        "billing_info": {
+customer_vault = CustomerVault()
+    result = customer_vault.create(
+        token,
+        {
             "first_name": "1",
             "last_name": "1",
             "address1": "1",
@@ -68,13 +69,13 @@ customer_vault = CustomerVault(secret_key)
 #### Get billing info by transaction id
 
 ```python
-from nmigate import CustomerVault
+from nmigate import Transactions
 
 secret_key = 'your secret key'
 transaction_id = 'transaction id '
 
-customer_vault = CustomerVault(secret_key)
-result = customer_vault.get_billing_info_by_transaction_id(transaction_id)
+trans = Transactions(transaction_id)
+result = trans.get_info()
 ```
 
 ### Plans

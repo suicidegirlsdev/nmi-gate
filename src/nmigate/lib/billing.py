@@ -1,67 +1,77 @@
-from nmigate.lib.nmi import Nmi
+import uuid
+
+from nmigate import Nmi
 
 
-class Billing(Nmi):
-    def validate_billing_id(self, customer_vault_id, billing_id):
-        data = {
-            "type": "validate",
+class BillingRecord(Nmi):
+    def __init__(self, customer_id, billing_id=None, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.customer_id = customer_id
+        # If no billing_id passed then only "add" can be used
+        # and it will generate one.
+        self.billing_id = billing_id
+
+    def _create_data(self, payment_action, **extra):
+        if not self.billing_id:
+            raise ValueError("Billing ID is required")
+        return {
             "security_key": self.security_key,
-            "customer_vault_id": customer_vault_id,
-            "billing_id": billing_id,
+            "type": payment_action,
+            "customer_vault_id": self.customer_id,
+            "billing_id": self.billing_id,
+            **extra,
         }
 
+    def validate(self):
+        data = self._create_data("validate")
         return self._post_payment_api_request(data)
 
-    def add(self, billing_req):
-        data = {
-            "customer_vault": "add_billing",
-            "payment": "creditcard",
-            "security_key": self.security_key,
-            "payment_token": billing_req["token"],
-            "customer_vault_id": billing_req["user_id"],
-            "billing_id": billing_req["billing_id"],
-        }
-        data.update(billing_req["billing_info"])
+    def add(self, payment_token, billing_info):
+        if not self.billing_id:
+            self.billing_id = str(uuid.uuid4())
+
+        data = self._create_data(
+            "add_billing",
+            payment="creditcard",
+            payment_token=payment_token,
+            **billing_info,
+        )
+        response = self._post_payment_api_request(data)
+        if "billing_id" not in response:
+            response["billing_id"] = self.billing_id
+
+    def update(self, payment_token, billing_info):
+        data = self._create_data(
+            "update_billing",
+            payment="creditcard",
+            payment_token=payment_token,
+            **billing_info,
+        )
         return self._post_payment_api_request(data)
 
-    def update(self, billing_req):
+    def delete(self):
+        data = self._create_data("delete_billing")
+        return self._post_payment_api_request(data)
+
+    def set_priority(self, priority):
+        if not self.billing_id:
+            raise ValueError("Billing ID is required")
         data = {
             "customer_vault": "update_billing",
-            "payment": "creditcard",
             "security_key": self.security_key,
-            "payment_token": billing_req["token"],
-            "customer_vault_id": billing_req["user_id"],
-            "billing_id": billing_req["billing_id"],
-        }
-        data.update(billing_req["billing_info"])
-        return self._post_payment_api_request(data)
-
-    def delete(self, user_id, billing_id):
-        data = {
-            "customer_vault": "delete_billing",
-            "security_key": self.security_key,
-            "customer_vault_id": user_id,
-            "billing_id": billing_id,
-        }
-        return self._post_payment_api_request(data)
-
-    def change_subscription_billing(self, request):
-        data = {
-            "recurring": "update_subscription",
-            "security_key": self.security_key,
-            "customer_vault_id": request.get("user_id"),
-            "subscription_id": request.get("subscription_id"),
-            "billing_id": request.get("billing_id"),
-        }
-
-        return self._post_payment_api_request(data)
-
-    def set_priority(self, user_id, billing_id, priority):
-        data = {
-            "customer_vault": "update_billing",
-            "security_key": self.security_key,
-            "customer_vault_id": user_id,
-            "billing_id": billing_id,
+            "customer_vault_id": self.customer_id,
+            "billing_id": self.billing_id,
             "priority": priority,
         }
         return self._post_payment_api_request(data)
+
+    def _post_payment_api_request(self, data):
+        """
+        The API docs suggest the billing id isn't returned in responses,
+        even when the API creates the billing id. For consistency,
+        include the one passed-in or created by us in every response.
+        """
+        response = super()._post_payment_api_request(data)
+        if "billing_id" not in response:
+            response["billing_id"] = self.billing_id
+        return response

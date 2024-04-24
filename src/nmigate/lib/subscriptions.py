@@ -162,3 +162,14 @@ class Subscriptions(Nmi):
         data.update(billing_info)
 
         return self._post_payment_api_request(data)
+
+    def change_subscription_billing(self, billing_id, subscription_id):
+        # This should prob be in subscriptions.py
+        data = self._create_data(
+            "",
+            billing_id,
+            recurring="update_subscription",
+            subscription_id=subscription_id,
+        ).pop("type")
+
+        return self._post_payment_api_request(data)
