@@ -2,11 +2,9 @@ import uuid
 from typing import Any, Dict, Union
 
 from nmigate.lib.nmi import Nmi
-from nmigate.util.wrappers import postProcessingOutput, postProcessXml
 
 
 class CustomerVault(Nmi):
-    @postProcessingOutput
     def create(self, vault_request) -> Dict[str, Union[Any, str]]:
         uid = (uuid.uuid4().hex,)
 
@@ -24,7 +22,6 @@ class CustomerVault(Nmi):
         response = self._post_payment_api_request(data)
         return {"response": response, "type": "create_customer_vault"}
 
-    @postProcessingOutput
     def update(self, id: str, billing_info) -> Dict[str, Union[Any, str]]:
         data = {
             "customer_vault": "update_customer",
@@ -35,7 +32,6 @@ class CustomerVault(Nmi):
         response = self._post_payment_api_request(data)
         return {"response": response, "type": "update_customer_vault"}
 
-    @postProcessingOutput
     def validate(self, user_id: str) -> Dict[str, Union[Any, str]]:
         query = {
             "security_key": self.security_key,
@@ -46,7 +42,6 @@ class CustomerVault(Nmi):
         response = self._post_payment_api_request(query)
         return {"response": response, "type": "create_customer_vault"}
 
-    @postProcessXml
     def get_billing_info_by_transaction_id(self, transaction_id) -> Any:
         query = {
             "security_key": self.security_key,
@@ -54,7 +49,6 @@ class CustomerVault(Nmi):
         }
         return self._post_query_api_request(query)
 
-    @postProcessXml
     def get_customer_info(self, id) -> Any:
         query = {
             "report_type": "customer_vault",
@@ -63,7 +57,6 @@ class CustomerVault(Nmi):
         }
         return self._post_query_api_request(query)
 
-    @postProcessingOutput
     def delete(self, id: str) -> Dict[str, Union[Any, str]]:
         data = {
             "customer_vault": "delete_customer",

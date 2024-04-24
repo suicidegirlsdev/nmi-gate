@@ -2,7 +2,6 @@ from typing import Any, Dict, Union
 
 from nmigate.lib.nmi import Nmi
 from nmigate.lib.plans import Plans
-from nmigate.util.wrappers import postProcessingOutput, postProcessXml
 
 
 class Subscriptions(Nmi):
@@ -10,7 +9,6 @@ class Subscriptions(Nmi):
         super().__init__(token)
         self.plans = Plans(token)
 
-    @postProcessingOutput
     def custom_sale_using_vault(
         self, plan_id, customer_vault_id, transaction_id, create_customer_vault=False
     ) -> Dict[str, Union[Any, str]]:
@@ -44,7 +42,6 @@ class Subscriptions(Nmi):
 
     """  if amount = 0 then its a simple subscription, if amount = 1 then its a subscription with sale """
 
-    @postProcessingOutput
     def custom_sale_using_vault_month_frequency(
         self, request_sub
     ) -> Dict[str, Union[Any, str]]:
@@ -77,7 +74,6 @@ class Subscriptions(Nmi):
             "type": "set_custom_subscription_with_sale_and_vault_month_config",
         }
 
-    @postProcessingOutput
     def custom_with_sale_and_vault_day_frequency(
         self, request_sub
     ) -> Dict[str, Union[Any, str]]:
@@ -107,7 +103,6 @@ class Subscriptions(Nmi):
             "type": "set_custom_subscription_with_sale_and_vault_day_frequency",
         }
 
-    @postProcessXml
     def get_info(self, id) -> Any:
         query = {
             "report_type": "recurring",
@@ -116,7 +111,6 @@ class Subscriptions(Nmi):
         }
         return self._post_query_api_request(query)
 
-    @postProcessingOutput
     def delete(self, subscription_id):
         data = {
             "recurring": "delete_subscription",
@@ -131,7 +125,6 @@ class Subscriptions(Nmi):
             "type": "delete_subscription",
         }
 
-    @postProcessingOutput
     def pause_subscription(self, subscription_id, pause):
         data = {
             "recurring": "update_subscription",
@@ -147,7 +140,6 @@ class Subscriptions(Nmi):
             "type": "pause_subscription",
         }
 
-    @postProcessingOutput
     def update_month_subscription(
         self,
         subscription_id: str,
@@ -182,7 +174,6 @@ class Subscriptions(Nmi):
             "type": "update_month_subscription",
         }
 
-    @postProcessingOutput
     def update_day_subscription(
         self,
         subscription_id: str,

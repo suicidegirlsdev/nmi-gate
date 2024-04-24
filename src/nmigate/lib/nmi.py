@@ -1,4 +1,8 @@
+from datetime import datetime
+from urllib.parse import parse_qs, urlparse
+
 import requests
+import xmltodict
 
 
 class Nmi:
@@ -28,10 +32,57 @@ class Nmi:
         return requests.post(url=url, data=data)
 
     def _post_payment_api_request(self, data):
-        return self._post_request(self.payment_api_url, data)
+        response = self._post_request(self.payment_api_url, data)
+        return self._parse_payment_api_response(response)
 
     def _post_query_api_request(self, data):
-        return self._post_request(self.query_api_url, data)
+        response = self._post_request(self.query_api_url, data)
+        return self._parse_query_api_response(response)
+
+    def _parse_query_api_response(self, response):
+        # Moved from wrappers (decorators)
+
+        # clean logging data
+        if "req" in response and "security_key" in response["req"]:
+            response["req"].pop("security_key")
+
+        # pre process nmi_detail
+        nmi_response = response.pop("response")
+        nmi_response_parsed_url = urlparse(nmi_response.text)
+        nmi_response_cleared = parse_qs(nmi_response_parsed_url.path)
+
+        # create new dictionary with all the data
+        response["nm_response"] = nmi_response_cleared
+        response["date"] = datetime.now()
+
+        # Validate if nmi response is successful
+        if nmi_response_cleared["response_code"][0] == "100":
+            response["successful"] = True
+        else:
+            response["successful"] = False
+
+        new_res = {}
+        try:
+            for key in response["nm_response"]:
+                new_res[key] = response["nm_response"][key][0]
+        except KeyError:
+            pass
+        response["nm_response"] = new_res
+        return response
+
+    def _parse_payment_api_response(self, response):
+        xml_string = response.text.replace('<?xml version="1.0" encoding="UTF-8"?>', "")
+        # xml_string = op_result.text.replace('<?xml version="1.0" encoding="UTF-8"?>', '')
+        # Define custom entities for é, ï, and ü characters
+        entity_definitions = "<!DOCTYPE root [\n"
+        entity_definitions += '<!ENTITY eacute "&#233;">\n'
+        entity_definitions += '<!ENTITY iuml "&#239;">\n'
+        entity_definitions += '<!ENTITY uuml "&#252;">\n'
+        entity_definitions += '<!ENTITY rsquo "&#x2019;">\n'
+        entity_definitions += "]>\n"
+        # Parse XML string into an Element object
+        response_dict = xmltodict.parse(entity_definitions + xml_string)
+        return response_dict
 
 
 def config_gateway(security_key, payment_api_url, query_api_url):

@@ -1,11 +1,9 @@
 from typing import Any, Dict, Union
 
 from nmigate.lib.nmi import Nmi
-from nmigate.util.wrappers import postProcessingOutput
 
 
 class Transactions(Nmi):
-    @postProcessingOutput
     def pay_with_token(self, payment_request) -> Dict[str, Union[Any, str]]:
         data = {
             "type": "sale",
@@ -21,7 +19,6 @@ class Transactions(Nmi):
             "type": "pay_with_token",
         }
 
-    @postProcessingOutput
     def pay_with_customer_vault(self, payment_request) -> Dict[str, Union[Any, str]]:
         data = {
             "security_key": self.security_key,
@@ -38,7 +35,6 @@ class Transactions(Nmi):
             "type": "pay_with_customer_vault",
         }
 
-    @postProcessingOutput
     def refund(self, transaction_id) -> Dict[str, Union[Any, str]]:
         data = {
             "type": "refund",

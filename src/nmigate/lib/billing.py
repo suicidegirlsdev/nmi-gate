@@ -1,10 +1,7 @@
-
 from nmigate.lib.nmi import Nmi
-from nmigate.util.wrappers import postProcessingOutput
 
 
 class Billing(Nmi):
-    @postProcessingOutput
     def validate_billing_id(self, customer_vault_id, billing_id):
         data = {
             "type": "validate",
@@ -16,7 +13,6 @@ class Billing(Nmi):
         response = self._post_payment_api_request(data)
         return {"response": response, "type": "validate_billing_id"}
 
-    @postProcessingOutput
     def add(self, billing_req):
         data = {
             "customer_vault": "add_billing",
@@ -30,7 +26,6 @@ class Billing(Nmi):
         res = self._post_payment_api_request(data)
         return {"response": res, "type": "add_billing_info"}
 
-    @postProcessingOutput
     def update(self, billing_req):
         data = {
             "customer_vault": "update_billing",
@@ -44,7 +39,6 @@ class Billing(Nmi):
         response = self._post_payment_api_request(data)
         return {"response": response, "type": "update_billing_info"}
 
-    @postProcessingOutput
     def delete(self, user_id, billing_id):
         data = {
             "customer_vault": "delete_billing",
@@ -55,7 +49,6 @@ class Billing(Nmi):
         response = self._post_payment_api_request(data)
         return {"response": response, "type": "delete_billing_info"}
 
-    @postProcessingOutput
     def change_subscription_billing(self, request):
         data = {
             "recurring": "update_subscription",
@@ -72,7 +65,6 @@ class Billing(Nmi):
             "type": "update_subscription_billing",
         }
 
-    @postProcessingOutput
     def set_priority(self, user_id, billing_id, priority):
         data = {
             "customer_vault": "update_billing",

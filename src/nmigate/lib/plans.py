@@ -1,11 +1,9 @@
 from typing import Any, Dict, Union
 
 from nmigate.lib.nmi import Nmi
-from nmigate.util.wrappers import postProcessingOutput, postProcessXml
 
 
 class Plans(Nmi):
-    @postProcessingOutput
     def add_plan_by_month_config(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "add_plan",
@@ -24,7 +22,6 @@ class Plans(Nmi):
             "type": "add_plan_by_month_config",
         }
 
-    @postProcessingOutput
     def edit_plan_by_month_config(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "edit_plan",
@@ -43,7 +40,6 @@ class Plans(Nmi):
             "type": "edit_plan_by_month_config",
         }
 
-    @postProcessingOutput
     def add_plan_by_day_frequency(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "add_plan",
@@ -61,7 +57,6 @@ class Plans(Nmi):
             "type": "add_plan_by_day_frequency",
         }
 
-    @postProcessingOutput
     def edit_plan_by_day_frequency(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "edit_plan",
@@ -79,7 +74,6 @@ class Plans(Nmi):
             "type": "edit_plan_by_day_frequency",
         }
 
-    @postProcessXml
     def get_all_plans(self) -> Any:
         query = {
             "security_key": self.security_key,
@@ -87,7 +81,6 @@ class Plans(Nmi):
         }
         return self._post_query_api_request(query)
 
-    # @postProcessXml
     def get_plan(self, id) -> Union[None, Dict[str, Any]]:
         plans = self.get_all_plans()
         for plan in plans["nm_response"]["plan"]:
