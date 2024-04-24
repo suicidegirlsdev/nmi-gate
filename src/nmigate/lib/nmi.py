@@ -1,5 +1,4 @@
-from datetime import datetime
-from urllib.parse import parse_qs, urlparse
+from urllib.parse import parse_qsl
 
 import requests
 import xmltodict
@@ -39,40 +38,19 @@ class Nmi:
         response = self._post_request(self.query_api_url, data)
         return self._parse_query_api_response(response)
 
-    def _parse_query_api_response(self, response):
-        # Moved from wrappers (decorators)
+    def _parse_payment_api_response(self, response):
+        """convert to dict and add a "successful" key based on response code."""
+        response_dict = dict(parse_qsl(response.text)) if response.text else {}
 
-        # clean logging data
-        if "req" in response and "security_key" in response["req"]:
-            response["req"].pop("security_key")
-
-        # pre process nmi_detail
-        nmi_response = response.pop("response")
-        nmi_response_parsed_url = urlparse(nmi_response.text)
-        nmi_response_cleared = parse_qs(nmi_response_parsed_url.path)
-
-        # create new dictionary with all the data
-        response["nm_response"] = nmi_response_cleared
-        response["date"] = datetime.now()
-
-        # Validate if nmi response is successful
-        if nmi_response_cleared["response_code"][0] == "100":
-            response["successful"] = True
+        if response_dict["response_code"] == "100":
+            response_dict["successful"] = True
         else:
-            response["successful"] = False
-
-        new_res = {}
-        try:
-            for key in response["nm_response"]:
-                new_res[key] = response["nm_response"][key][0]
-        except KeyError:
-            pass
-        response["nm_response"] = new_res
+            response_dict["successful"] = False
         return response
 
-    def _parse_payment_api_response(self, response):
+    def _parse_query_api_response(self, response):
+        # Copied from original wrappers, left as is.
         xml_string = response.text.replace('<?xml version="1.0" encoding="UTF-8"?>', "")
-        # xml_string = op_result.text.replace('<?xml version="1.0" encoding="UTF-8"?>', '')
         # Define custom entities for é, ï, and ü characters
         entity_definitions = "<!DOCTYPE root [\n"
         entity_definitions += '<!ENTITY eacute "&#233;">\n'
