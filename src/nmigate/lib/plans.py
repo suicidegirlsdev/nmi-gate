@@ -15,12 +15,7 @@ class Plans(Nmi):
             "day_of_month": data["day_of_month"],
             "plan_payments": data["plan_payments"],
         }
-        response = self._post_payment_api_request(data)
-        return {
-            "response": response,
-            "req": data,
-            "type": "add_plan_by_month_config",
-        }
+        return self._post_payment_api_request(data)
 
     def edit_plan_by_month_config(self, data) -> Dict[str, Union[Any, str]]:
         data = {
@@ -33,12 +28,7 @@ class Plans(Nmi):
             "day_of_month": data["day_of_month"],
             "plan_payments": data["plan_payments"],
         }
-        response = self._post_payment_api_request(data)
-        return {
-            "response": response,
-            "req": data,
-            "type": "edit_plan_by_month_config",
-        }
+        return self._post_payment_api_request(data)
 
     def add_plan_by_day_frequency(self, data) -> Dict[str, Union[Any, str]]:
         data = {
@@ -50,12 +40,7 @@ class Plans(Nmi):
             "day_frequency": data["day_frequency"],
             "plan_payments": data["plan_payments"],
         }
-        response = self._post_payment_api_request(data)
-        return {
-            "response": response,
-            "req": data,
-            "type": "add_plan_by_day_frequency",
-        }
+        return self._post_payment_api_request(data)
 
     def edit_plan_by_day_frequency(self, data) -> Dict[str, Union[Any, str]]:
         data = {
@@ -67,12 +52,7 @@ class Plans(Nmi):
             "day_frequency": data["day_frequency"],
             "plan_payments": data["plan_payments"],
         }
-        response = self._post_payment_api_request(data)
-        return {
-            "response": response,
-            "req": data,
-            "type": "edit_plan_by_day_frequency",
-        }
+        return self._post_payment_api_request(data)
 
     def get_all_plans(self) -> Any:
         query = {

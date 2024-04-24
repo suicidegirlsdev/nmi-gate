@@ -19,8 +19,7 @@ class CustomerVault(Nmi):
             "billing_id": vault_request["billing_id"],
         }
         data.update(vault_request["billing_info"])
-        response = self._post_payment_api_request(data)
-        return {"response": response, "type": "create_customer_vault"}
+        return self._post_payment_api_request(data)
 
     def update(self, id: str, billing_info) -> Dict[str, Union[Any, str]]:
         data = {
@@ -29,8 +28,7 @@ class CustomerVault(Nmi):
             "customer_vault_id": id,
         }
         data.update(billing_info)
-        response = self._post_payment_api_request(data)
-        return {"response": response, "type": "update_customer_vault"}
+        return self._post_payment_api_request(data)
 
     def validate(self, user_id: str) -> Dict[str, Union[Any, str]]:
         query = {
@@ -39,8 +37,7 @@ class CustomerVault(Nmi):
             "amount": "0.00",
             "type": "validate",
         }
-        response = self._post_payment_api_request(query)
-        return {"response": response, "type": "create_customer_vault"}
+        return self._post_payment_api_request(query)
 
     def get_billing_info_by_transaction_id(self, transaction_id) -> Any:
         query = {
@@ -63,5 +60,4 @@ class CustomerVault(Nmi):
             "security_key": self.security_key,
             "customer_vault_id": id,
         }
-        response = self._post_payment_api_request(data)
-        return {"response": response, "type": "delete_customer_vault"}
+        return self._post_payment_api_request(data)

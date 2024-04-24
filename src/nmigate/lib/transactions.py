@@ -12,12 +12,7 @@ class Transactions(Nmi):
             "amount": payment_request["total"],
         }
         data.update(payment_request["billing_info"])
-        response = self._post_payment_api_request(data)
-        return {
-            "response": response,
-            "req": payment_request,
-            "type": "pay_with_token",
-        }
+        return self._post_payment_api_request(data)
 
     def pay_with_customer_vault(self, payment_request) -> Dict[str, Union[Any, str]]:
         data = {
@@ -28,12 +23,7 @@ class Transactions(Nmi):
             "stored_credential_indicator": "used",
             "initial_transaction_id": payment_request["transaction_id"],
         }
-        response = self._post_payment_api_request(data)
-        return {
-            "response": response,
-            "req": payment_request,
-            "type": "pay_with_customer_vault",
-        }
+        return self._post_payment_api_request(data)
 
     def refund(self, transaction_id) -> Dict[str, Union[Any, str]]:
         data = {
@@ -44,9 +34,4 @@ class Transactions(Nmi):
             "transactionid": transaction_id,
         }
 
-        response = self._post_payment_api_request(data)
-        return {
-            "response": response,
-            "req": {"transaction_id": transaction_id},
-            "type": "refund",
-        }
+        return self._post_payment_api_request(data)
