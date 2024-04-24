@@ -1,11 +1,18 @@
 import unittest
 
-from nmigate.lib.customer_vault import CustomerVault
+from nmigate import CustomerVault, config_gateway
 
 
 class TestCustomerVault(unittest.TestCase):
+    def setUp(self):
+        config_gateway(
+            "6457Thfj624V5r7WUwc5v6a68Zsd6YEm",
+            "https://ecsuite.transactiongateway.com/api/transact.php",
+            "https://ecsuite.transactiongateway.com/api/query.php",
+        )
+
     def test_create_customer_vault(self):
-        customer_vault = CustomerVault("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
+        customer_vault = CustomerVault()
         result = customer_vault.create(
             {
                 "id": "51asdfsf234asdfasfasfsa",
@@ -24,7 +31,7 @@ class TestCustomerVault(unittest.TestCase):
                 },
             }
         )
-        self.assertEqual(result["response_code"][0], 100)
+        self.assertEqual(result["response_code"], 100)
 
     def test_get_billing_info_by_transaction_id(self):
         customer_vault = CustomerVault("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
@@ -41,5 +48,5 @@ class TestCustomerVault(unittest.TestCase):
 
     def test_validate_customer_id(self):
         customer_vault = CustomerVault("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
-        result = customer_vault.validate_customer_vault("1")
+        result = customer_vault.validate("1")
         print(result)

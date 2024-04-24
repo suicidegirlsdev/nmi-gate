@@ -1,11 +1,18 @@
 import unittest
 
-from nmigate.lib.billing import Billing
+from nmigate import Billing, config_gateway
 
 
 class TestBilling(unittest.TestCase):
+    def setUp(self):
+        config_gateway(
+            "6457Thfj624V5r7WUwc5v6a68Zsd6YEm",
+            "https://ecsuite.transactiongateway.com/api/transact.php",
+            "https://ecsuite.transactiongateway.com/api/query.php",
+        )
+
     def test_add(self):
-        billing = Billing("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
+        billing = Billing()
         res = billing.add(
             {
                 "user_id": "1",
@@ -27,7 +34,7 @@ class TestBilling(unittest.TestCase):
         self.assertEqual(res["response_code"], "100")
 
     def test_update(self):
-        billing = Billing("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
+        billing = Billing()
         res = billing.update(
             {
                 "user_id": "1",
@@ -50,12 +57,12 @@ class TestBilling(unittest.TestCase):
         self.assertEqual(res["response_code"], "100")
 
     def test_delete(self):
-        billing = Billing("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
+        billing = Billing()
         res = billing.delete("1", "132")
         self.assertEqual(res["response_code"], "100")
 
     def test_change_subscription_billing(self):
-        billing = Billing("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
+        billing = Billing()
         res = billing.change_subscription_billing(
             {
                 "user_id": "1",
@@ -67,7 +74,7 @@ class TestBilling(unittest.TestCase):
         self.assertEqual(res["response_code"], "100")
 
     def test_set_priority(self):
-        billing = Billing("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
+        billing = Billing()
         res = billing.set_priority("1", "f00da1e2689d4dbca6d8c611e62e824d", "1")
         print(res)
         self.assertEqual(res["response_code"], "100")

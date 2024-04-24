@@ -1,11 +1,18 @@
 import unittest
 
-from nmigate.lib.transactions import Transactions
+from nmigate import Transactions, config_gateway
 
 
 class TestTransactions(unittest.TestCase):
+    def setUp(self):
+        config_gateway(
+            "6457Thfj624V5r7WUwc5v6a68Zsd6YEm",
+            "https://ecsuite.transactiongateway.com/api/transact.php",
+            "https://ecsuite.transactiongateway.com/api/query.php",
+        )
+
     def test_pay_with_token(self):
-        transactions = Transactions("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
+        transactions = Transactions()
         result = transactions.pay_with_token(
             {
                 "token": "00000000-000000-000000-000000000000",
@@ -27,7 +34,7 @@ class TestTransactions(unittest.TestCase):
         self.assertEqual(result["response_code"], "100")
 
     def test_pay_with_customer_vault(self):
-        transactions = Transactions("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
+        transactions = Transactions()
         result = transactions.pay_with_customer_vault(
             {
                 "user_id": "1",
@@ -37,6 +44,6 @@ class TestTransactions(unittest.TestCase):
         self.assertEqual(result["response_code"], "100")
 
     def test_refound(self):
-        transactions = Transactions("6457Thfj624V5r7WUwc5v6a68Zsd6YEm")
+        transactions = Transactions()
         result = transactions.refund("8926614344")
         self.assertEqual(result["response_code"], "100")
