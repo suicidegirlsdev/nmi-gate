@@ -1,7 +1,7 @@
 from typing import Any, Dict, Union
 
-from nmigate.lib.nmi import Nmi
-from nmigate.lib.plans import Plans
+from ..nmi import Nmi
+from .plans import Plans
 
 
 class Subscriptions(Nmi):

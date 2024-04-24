@@ -45,7 +45,7 @@ config_gateway(
 #### Create customer vault
 
 ```python
-from nmigate import CustomerVault
+from nmigate.customer import CustomerVault
 
 payment_token = 'your test token here' # test token "00000000-000000-000000-000000000000"
 
@@ -69,7 +69,7 @@ customer_vault = CustomerVault()
 #### Get billing info by transaction id
 
 ```python
-from nmigate import Transactions
+from nmigate.payment import Transactions
 
 secret_key = 'your secret key'
 transaction_id = 'transaction id '
@@ -83,7 +83,7 @@ result = trans.get_info()
 ### Get all plans
 
 ```python
-from nmigate import Plans
+from nmigate.subscription import Plans
 
 secret_key = 'your secret key'
 
@@ -96,7 +96,7 @@ plans = response['plan']
 ### Get plan
 
 ```python
-from nmigate import Plans
+from nmigate.subscription import Plans
 
 secret_key = 'your secret key'
 plan_id = 'your plan id'
@@ -109,7 +109,7 @@ response = plans.get_plan(plan_id)
 ### Add plan using frequency configuration
 
 ```python
-from nmigate import Plans
+from nmigate.subscription import Plans
 
 secret_key = 'your secret key'
 
@@ -127,7 +127,7 @@ response = plans.add_plan_by_day_frequency({
 ### Edit day frequency plan
 
 ```python
-from nmigate import Plans
+from nmigate.subscription import Plans
 
 secret_key = 'your secret key'
 
@@ -146,7 +146,7 @@ response = plans.edit_plan_by_day_frequency({
 ### Add plan using month config
 
 ```python
-from nmigate import Plans
+from nmigate.subscription import Plans
 
 secret_key = 'your secret key'
 
@@ -165,7 +165,7 @@ response = plans.add_plan_by_month_config({
 ### Edit plan using month config
 
 ```python
-from nmigate import Plans
+from nmigate.subscription import Plans
 
 secret_key = 'your secret key'
 
@@ -185,7 +185,7 @@ response = plans.edit_plan_by_month_config({
 #### Get Subscriptions
 
 ```python
-from nmigate import CustomerVault
+from nmigate.customer import CustomerVault
 
 secret_key = 'your secret key'
 subscription_id='customer vault id'
@@ -200,7 +200,7 @@ print(result)
 If total_amount = 0 then its a simple subscription, if total_amount > 0 then its a subscription with sale
 
 ```python
-from nmigate import CustomerVault
+from nmigate.customer import CustomerVault
 
 secret_key = 'your secret key'
 customer_vault_id='customer vault id'
@@ -213,7 +213,7 @@ print(result)
 #### Custome Subscription + sale, using vault number and month frequency configuration
 
 ```python
-from nmigate import Subscriptions
+from nmigate.subscription import Subscriptions
 
 secret_key = 'your secret key'
 
@@ -235,7 +235,7 @@ print(result)
 #### Custome Subscription + sale, using vault number and day frequency configuration
 
 ```python
-from nmigate import Subscriptions
+from nmigate.subscription import Subscriptions
 
 secret_key = 'your secret key'
 
@@ -255,7 +255,7 @@ print(result)
 #### Delete subscription
 
 ```python
-from nmigate import Subscriptions
+from nmigate.subscription import Subscriptions
 
 secret_key = 'your secret key'
 subscription_id = 'your subscription_id'
@@ -267,7 +267,7 @@ info = subscriptions.delete_subscription(subscription_id)
 #### Pause/resume Subscription
 
 ```python
-from nmigate import Subscriptions
+from nmigate.subscription import Subscriptions
 
 secret_key = 'your secret key'
 subscription_id = 'your subscription_id'

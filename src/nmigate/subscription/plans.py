@@ -1,6 +1,6 @@
 from typing import Any, Dict, Union
 
-from nmigate.lib.nmi import Nmi
+from ..nmi import Nmi
 
 
 class Plans(Nmi):

@@ -1,4 +1,4 @@
-from nmigate import Nmi
+from ..nmi import Nmi
 
 
 class Transactions(Nmi):

@@ -1,6 +1,6 @@
 import uuid
 
-from nmigate import Nmi
+from ..nmi import Nmi
 
 
 class CustomerVault(Nmi):
