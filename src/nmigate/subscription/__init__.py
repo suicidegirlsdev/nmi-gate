@@ -1,4 +1,4 @@
-from .plans import Plans
-from .subscriptions import Subscriptions
+from .plan import Plan
+from .subscription import Subscription
 
-__all__ = ["Plans", "Subscriptions"]
+__all__ = ["Plan", "Subscription"]

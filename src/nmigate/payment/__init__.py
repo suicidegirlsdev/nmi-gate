@@ -1,3 +1,3 @@
-from .transactions import Transactions
+from .transaction import Transaction
 
-__all__ = ["Transactions"]
+__all__ = ["Transaction"]

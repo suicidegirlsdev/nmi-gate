@@ -3,7 +3,7 @@ from typing import Any, Dict, Union
 from ..nmi import Nmi
 
 
-class Plans(Nmi):
+class Plan(Nmi):
     def add_plan_by_month_config(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "add_plan",

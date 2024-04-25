@@ -1,7 +1,7 @@
 import unittest
 
 from nmigate import config_gateway
-from nmigate.subscription import Subscriptions
+from nmigate.subscription import Subscription
 
 
 class TestSubs(unittest.TestCase):
@@ -13,19 +13,19 @@ class TestSubs(unittest.TestCase):
         )
 
     def test_get_plans(self):
-        subscriptions = Subscriptions()
+        subscriptions = Subscription()
         info = subscriptions.get_info("8462293105")
         self.assertEqual(info["subscription"]["subscription_id"], "8462293105")
 
     def test_custom_sale_using_vault(self):
-        subscriptions = Subscriptions()
+        subscriptions = Subscription()
         result = subscriptions.custom_sale_using_vault(
             plan_id="swzpremiumyear", customer_vault_id="1", create_customer_vault=False
         )
         self.assertEqual(result["response_code"], "100")
 
     def test_custom_sale_using_vault_month_frequency(self):
-        subscriptions = Subscriptions()
+        subscriptions = Subscription()
         result = subscriptions.custom_sale_using_vault_month_frequency(
             request_sub={
                 "user_id": "1",
@@ -42,7 +42,7 @@ class TestSubs(unittest.TestCase):
         self.assertEqual(result["response_code"], "100")
 
     def test_custom_with_sale_and_vault_day_frequency(self):
-        subscriptions = Subscriptions()
+        subscriptions = Subscription()
         result = subscriptions.custom_with_sale_and_vault_day_frequency(
             request_sub={
                 "user_id": "1",
@@ -58,12 +58,12 @@ class TestSubs(unittest.TestCase):
         self.assertEqual(result["response_code"], "100")
 
     def test_delete_subscription(self):
-        subscriptions = Subscriptions()
+        subscriptions = Subscription()
         info = subscriptions.delete("8462218027")
         self.assertEqual(info["response_code"], 100)
 
     def test_pause_subscription(self):
-        transactions = Subscriptions()
+        transactions = Subscription()
         result = transactions.pause("8926648990", True)
         print(result)
         self.assertEqual(result["response_code"], "100")

@@ -1,7 +1,7 @@
 from ..nmi import Nmi
 
 
-class Transactions(Nmi):
+class Transaction(Nmi):
     def __init__(self, transaction_id=None, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # If no transaction_id passed then only "pay_with_token" can be used

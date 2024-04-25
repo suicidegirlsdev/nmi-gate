@@ -1,13 +1,13 @@
 from typing import Any, Dict, Union
 
 from ..nmi import Nmi
-from .plans import Plans
+from .plan import Plan
 
 
-class Subscriptions(Nmi):
+class Subscription(Nmi):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.plans = Plans(*args, **kwargs)
+        self.plans = Plan(*args, **kwargs)
 
     def custom_sale_using_vault(
         self, plan_id, customer_vault_id, transaction_id, create_customer_vault=False
