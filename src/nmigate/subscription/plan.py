@@ -1,14 +1,9 @@
 from typing import Any, Dict, Union
 
-import requests
-
-from nmigate.lib.nmi import Nmi
-from nmigate.util.wrappers import log, postProcessingOutput, postProcessXml
+from ..nmi import Nmi
 
 
-class Plans(Nmi):
-    @log
-    @postProcessingOutput
+class Plan(Nmi):
     def add_plan_by_month_config(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "add_plan",
@@ -20,15 +15,8 @@ class Plans(Nmi):
             "day_of_month": data["day_of_month"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(url=self.payment_api_url, data=data)
-        return {
-            "response": response,
-            "req": data,
-            "type": "add_plan_by_month_config",
-        }
+        return self._post_payment_api_request(data)
 
-    @log
-    @postProcessingOutput
     def edit_plan_by_month_config(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "edit_plan",
@@ -40,15 +28,8 @@ class Plans(Nmi):
             "day_of_month": data["day_of_month"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(url=self.payment_api_url, data=data)
-        return {
-            "response": response,
-            "req": data,
-            "type": "edit_plan_by_month_config",
-        }
+        return self._post_payment_api_request(data)
 
-    @log
-    @postProcessingOutput
     def add_plan_by_day_frequency(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "add_plan",
@@ -59,15 +40,8 @@ class Plans(Nmi):
             "day_frequency": data["day_frequency"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(url=self.payment_api_url, data=data)
-        return {
-            "response": response,
-            "req": data,
-            "type": "add_plan_by_day_frequency",
-        }
+        return self._post_payment_api_request(data)
 
-    @log
-    @postProcessingOutput
     def edit_plan_by_day_frequency(self, data) -> Dict[str, Union[Any, str]]:
         data = {
             "recurring": "edit_plan",
@@ -78,27 +52,18 @@ class Plans(Nmi):
             "day_frequency": data["day_frequency"],
             "plan_payments": data["plan_payments"],
         }
-        response = requests.post(url=self.payment_api_url, data=data)
-        return {
-            "response": response,
-            "req": data,
-            "type": "edit_plan_by_day_frequency",
-        }
+        return self._post_payment_api_request(data)
 
-    @postProcessXml
     def get_all_plans(self) -> Any:
-        url = self.query_api_url
         query = {
             "security_key": self.security_key,
             "report_type": "recurring_plans",
         }
-        response = requests.post(url=url, data=query)
-        return response
+        return self._post_query_api_request(query)
 
-    # @postProcessXml
     def get_plan(self, id) -> Union[None, Dict[str, Any]]:
         plans = self.get_all_plans()
-        for plan in plans["nm_response"]["plan"]:
+        for plan in plans["plan"]:
             if plan["plan_id"] == id:
                 return plan
 

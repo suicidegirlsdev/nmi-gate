@@ -1,18 +1,14 @@
 from typing import Any, Dict, Union
 
-import requests
-
-from nmigate.lib.nmi import Nmi
-from nmigate.lib.plans import Plans
-from nmigate.util.wrappers import postProcessingOutput, postProcessXml
+from ..nmi import Nmi
+from .plan import Plan
 
 
-class Subscriptions(Nmi):
-    def __init__(self, token):
-        super().__init__(token)
-        self.plans = Plans(token)
+class Subscription(Nmi):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.plans = Plan(*args, **kwargs)
 
-    @postProcessingOutput
     def custom_sale_using_vault(
         self, plan_id, customer_vault_id, transaction_id, create_customer_vault=False
     ) -> Dict[str, Union[Any, str]]:
@@ -33,20 +29,10 @@ class Subscriptions(Nmi):
         }
         data["customer_vault"] = "add_customer" if create_customer_vault else None
 
-        response = requests.post(url=self.payment_api_url, data=data)
-        return {
-            "response": response,
-            "req": {
-                "customer_vault_id": customer_vault_id,
-                "plan_id": plan_id,
-                "total": plan_amount,
-            },
-            "type": "set_subscription_with_sale_and_vault",
-        }
+        return self._post_payment_api_request(data)
 
     """  if amount = 0 then its a simple subscription, if amount = 1 then its a subscription with sale """
 
-    @postProcessingOutput
     def custom_sale_using_vault_month_frequency(
         self, request_sub
     ) -> Dict[str, Union[Any, str]]:
@@ -72,14 +58,8 @@ class Subscriptions(Nmi):
             del data["type"]
             del data["amount"]
 
-        response = requests.post(url=self.payment_api_url, data=data)
-        return {
-            "response": response,
-            "req": request_sub,
-            "type": "set_custom_subscription_with_sale_and_vault_month_config",
-        }
+        return self._post_payment_api_request(data)
 
-    @postProcessingOutput
     def custom_with_sale_and_vault_day_frequency(
         self, request_sub
     ) -> Dict[str, Union[Any, str]]:
@@ -102,56 +82,33 @@ class Subscriptions(Nmi):
             del data["type"]
             del data["amount"]
 
-        response = requests.post(url=self.payment_api_url, data=data)
-        return {
-            "response": response,
-            "req": request_sub,
-            "type": "set_custom_subscription_with_sale_and_vault_day_frequency",
-        }
+        return self._post_payment_api_request(data)
 
-    @postProcessXml
     def get_info(self, id) -> Any:
-        url = self.query_api_url
         query = {
             "report_type": "recurring",
             "security_key": self.security_key,
             "subscription_id": id,
         }
-        response = requests.post(url=url, data=query)
-        return response
+        return self._post_query_api_request(query)
 
-    @postProcessingOutput
     def delete(self, subscription_id):
         data = {
             "recurring": "delete_subscription",
             "security_key": self.security_key,
             "subscription_id": subscription_id,
         }
-        response = requests.post(url=self.payment_api_url, data=data)
-        del data["security_key"]
-        return {
-            "response": response,
-            "req": data,
-            "type": "delete_subscription",
-        }
+        return self._post_payment_api_request(data)
 
-    @postProcessingOutput
-    def pause_subscription(self, subscription_id, pause):
+    def pause(self, subscription_id, pause):
         data = {
             "recurring": "update_subscription",
             "security_key": self.security_key,
             "subscription_id": subscription_id,
             "paused_subscription": str(pause).lower(),
         }
-        response = requests.post(url=self.payment_api_url, data=data)
-        del data["security_key"]
-        return {
-            "response": response,
-            "req": data,
-            "type": "pause_subscription",
-        }
+        return self._post_payment_api_request(data)
 
-    @postProcessingOutput
     def update_month_subscription(
         self,
         subscription_id: str,
@@ -178,15 +135,8 @@ class Subscriptions(Nmi):
         }
         data.update(billing_info)
 
-        response = requests.post(url=self.payment_api_url, data=data)
-        del data["security_key"]
-        return {
-            "response": response,
-            "req": data,
-            "type": "update_month_subscription",
-        }
+        return self._post_payment_api_request(data)
 
-    @postProcessingOutput
     def update_day_subscription(
         self,
         subscription_id: str,
@@ -211,10 +161,15 @@ class Subscriptions(Nmi):
         }
         data.update(billing_info)
 
-        response = requests.post(url=self.payment_api_url, data=data)
-        del data["security_key"]
-        return {
-            "response": response,
-            "req": data,
-            "type": "update_day_subscription",
-        }
+        return self._post_payment_api_request(data)
+
+    def change_subscription_billing(self, billing_id, subscription_id):
+        # This should prob be in subscriptions.py
+        data = self._create_data(
+            "",
+            billing_id,
+            recurring="update_subscription",
+            subscription_id=subscription_id,
+        ).pop("type")
+
+        return self._post_payment_api_request(data)
