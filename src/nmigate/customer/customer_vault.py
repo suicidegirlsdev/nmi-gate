@@ -31,9 +31,9 @@ class CustomerVault(Nmi):
         billing_id=None,
     ):
         if not self.customer_id:
-            self.customer_id = str(uuid.uuid4())
+            self.customer_id = uuid.uuid4().hex
 
-        self.billing_id = billing_id or str(uuid.uuid4())
+        self.billing_id = billing_id or uuid.uuid4().hex
 
         data = self._create_data(
             "add_customer",
@@ -52,7 +52,7 @@ class CustomerVault(Nmi):
 
     def charge(self, amount, initial_transaction_id, initiated_by_customer=False):
         if not self.customer_id:
-            self.customer_id = str(uuid.uuid4())
+            self.customer_id = uuid.uuid4().hex
 
         data = {
             "security_key": self.security_key,

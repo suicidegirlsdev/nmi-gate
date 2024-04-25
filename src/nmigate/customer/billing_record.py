@@ -28,7 +28,9 @@ class BillingRecord(Nmi):
 
     def add(self, payment_token, billing_info):
         if not self.billing_id:
-            self.billing_id = str(uuid.uuid4())
+            # API does not state a max, but including hyphens failed with "too long".
+            # The hex version appears to work, though.
+            self.billing_id = uuid.uuid4().hex
 
         data = self._create_data(
             "add_billing",
