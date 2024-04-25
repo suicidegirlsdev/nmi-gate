@@ -48,6 +48,7 @@ class CustomerVault(Nmi):
         # Make sure the billing_id used gets returned
         if "billing_id" not in response:
             response["billing_id"] = self.billing_id
+        return response
 
     def charge(self, amount, initial_transaction_id, initiated_by_customer=False):
         if not self.customer_id:
