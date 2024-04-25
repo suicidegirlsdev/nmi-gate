@@ -36,9 +36,7 @@ class BillingRecord(Nmi):
             payment_token=payment_token,
             **billing_info,
         )
-        response = self._post_payment_api_request(data)
-        if "billing_id" not in response:
-            response["billing_id"] = self.billing_id
+        return self._post_payment_api_request(data)
 
     def update(self, payment_token, billing_info):
         data = self._create_data(
