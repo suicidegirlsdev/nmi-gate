@@ -1,6 +1,7 @@
 import unittest
 
-from nmigate import Plans, config_gateway
+from nmigate import config_gateway
+from nmigate.subscription import Plans
 
 
 class TestPlans(unittest.TestCase):

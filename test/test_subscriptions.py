@@ -1,6 +1,7 @@
 import unittest
 
-from nmigate import Subscriptions, config_gateway
+from nmigate import config_gateway
+from nmigate.subscription import Subscriptions
 
 
 class TestSubs(unittest.TestCase):

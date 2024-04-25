@@ -1,6 +1,7 @@
 import unittest
 
-from nmigate import Transactions, config_gateway
+from nmigate import config_gateway
+from nmigate.payment import Transactions
 
 
 class TestTransactions(unittest.TestCase):
@@ -11,39 +12,32 @@ class TestTransactions(unittest.TestCase):
             "https://ecsuite.transactiongateway.com/api/query.php",
         )
 
-    def test_pay_with_token(self):
+    def test_charge_token(self):
         transactions = Transactions()
-        result = transactions.pay_with_token(
+        result = transactions.charge_token(
+            "00000000-000000-000000-000000000000",
+            5,
             {
-                "token": "00000000-000000-000000-000000000000",
-                "total": 5,
-                "billing_info": {
-                    "first_name": "test",
-                    "last_name": "test",
-                    "company": "test",
-                    "address1": "test",
-                    "city": "test",
-                    "state": "test",
-                    "zip": "test",
-                    "country": "test",
-                    "phone": "test",
-                    "email": "test",
-                },
-            }
+                "first_name": "test",
+                "last_name": "test",
+                "company": "test",
+                "address1": "test",
+                "city": "test",
+                "state": "test",
+                "zip": "test",
+                "country": "test",
+                "phone": "test",
+                "email": "test",
+            },
         )
         self.assertEqual(result["response_code"], "100")
 
-    def test_pay_with_customer_vault(self):
-        transactions = Transactions()
-        result = transactions.pay_with_customer_vault(
-            {
-                "user_id": "1",
-                "total": 10,
-            }
-        )
+    def test_refund(self):
+        transactions = Transactions("8926614344")
+        result = transactions.refund()
         self.assertEqual(result["response_code"], "100")
 
-    def test_refound(self):
-        transactions = Transactions()
-        result = transactions.refund("8926614344")
-        self.assertEqual(result["response_code"], "100")
+    def test_get_billing_info_by_transaction_id(self):
+        transactions = Transactions("8926649228")
+        result = transactions.get_info()
+        self.assertEqual(result["transaction"]["transaction_id"], "8926649228")
