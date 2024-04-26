@@ -3,12 +3,19 @@ from urllib.parse import parse_qsl
 import requests
 import xmltodict
 
+from . import exceptions, response_codes
+from .utils import card_expiration_as_date
+
 
 class Nmi:
     # Can set these on the class at app init to avoid passing on every use.
     security_key = None
     payment_api_url = None
     query_api_url = None
+
+    # Will raise on anything that isn't an "approved" response code.
+    # Can grab the parsed response from the exception if needed.
+    raise_response_errors = True
 
     def __init__(self, security_key=None, payment_api_url=None, query_api_url=None):
         if security_key:
@@ -28,7 +35,41 @@ class Nmi:
             raise ValueError("NMI gateway requires the query API URL to be set.")
 
     def _post_request(self, url, data):
-        return requests.post(url=url, data=data)
+        response = None
+        try:
+            response = requests.post(url=url, data=data)
+            if response.status_code == 429:
+                # Note: there can be other rate limit errors in the
+                # response payload, with 200 status. Checked later, after parsing.
+                raise exceptions.SystemWideRateLimitError(
+                    "Too many requests (system)",
+                    response=response,
+                )
+            # The API should return 200 on transaction errors and failures,
+            # and only 429 is documented as non-200 response.
+            # So assume any non-200 means there will not be a usable response payload
+            # and raise.
+            response.raise_for_status()
+        except requests.exceptions.HTTPError as e:
+            raise exceptions.HTTPError(
+                f"API returned unexpected status: {e}",
+                response=getattr(e, "response", response),
+                request=getattr(e, "request", None),
+            ) from e
+        except requests.exceptions.ConnectionError as e:
+            raise exceptions.ConnectionError(
+                f"Connection to gateway failed: {e}",
+                response=getattr(e, "response", response),
+                request=getattr(e, "request", None),
+            ) from e
+        except requests.exceptions.RequestException as e:
+            raise exceptions.APIException(
+                f"API request failed: {e}",
+                response=getattr(e, "response", response),
+                request=getattr(e, "request", None),
+            ) from e
+
+        return response
 
     def _post_payment_api_request(self, data):
         response = self._post_request(self.payment_api_url, data)
@@ -41,11 +82,14 @@ class Nmi:
     def _parse_payment_api_response(self, response):
         """convert to dict and add a "successful" key based on response code."""
         response_dict = dict(parse_qsl(response.text)) if response.text else {}
-        response_dict["successful"] = response_dict["response_code"] == "100"
+        self._normalize_response_dict(response_dict)
+        if self.raise_response_errors:
+            self._raise_response_errors(response_dict, response)
+
         return response_dict
 
     def _parse_query_api_response(self, response):
-        # Copied from original wrappers, largely left as is.
+        # Copied from original wrappers, XML parsing largely left as is.
         xml_string = response.text.replace('<?xml version="1.0" encoding="UTF-8"?>', "")
         # Define custom entities for é, ï, and ü characters
         entity_definitions = (
@@ -58,7 +102,88 @@ class Nmi:
         )
         # Parse XML string into an Element object
         response_dict = xmltodict.parse(entity_definitions + xml_string)
-        return response_dict.get("nm_response", response_dict)
+        response_dict = response_dict.get("nm_response", response_dict)
+        self._normalize_response_dict(response_dict)
+        if self.raise_response_errors:
+            self._raise_response_errors(response_dict, response)
+        return response_dict
+
+    def _normalize_response_dict(self, response_dict):
+        if "response" in response_dict:
+            response_dict["response"] == int(response_dict["response"]) or 0
+
+        if "response_code" in response_dict:
+            response_dict["response_code"] = int(response_dict["response_code"]) or 0
+
+        if "acu_enabled" in response_dict:
+            response_dict["acu_enabled"] = (
+                response_dict["acu_enabled"].lower() == "true"
+            )
+
+        if "cc_exp" in response_dict:
+            response_dict["cc_exp_date"] = (
+                card_expiration_as_date(response_dict["cc_exp"])
+                if response_dict["cc_exp"]
+                else None
+            )
+
+        if "cc_number" in response_dict:
+            response_dict["cc_last4"] = (
+                response_dict["cc_number"][-4:] if response_dict["cc_number"] else ""
+            )
+        return response_dict
+
+    def _raise_response_errors(self, parsed_response, response):
+        response_code = parsed_response.get("response_code")
+        if not response_code or response_code == response_codes.approved_response_code:
+            return
+
+        trans_response_code_messages_dict = dict(response_codes.Transaction)
+        if response_code == response_codes.rate_limit_error_response_code:
+            raise exceptions.APIRateLimitError(
+                # Favor our message for this one
+                trans_response_code_messages_dict(response_code),
+                response=response,
+                parsed_response=parsed_response,
+            )
+
+        message = parsed_response.get(
+            "responsetext"
+        ) or trans_response_code_messages_dict(response_code)
+
+        exception_kwargs = {
+            "response": response,
+            "parsed_response": parsed_response,
+        }
+
+        if response_code == response_codes.duplicate_transaction_response_code:
+            raise exceptions.TransactionDeclinedDuplicateError(
+                message,
+                **exception_kwargs,
+            )
+
+        if response_code in response_codes.retryable_failure_response_codes:
+            raise exceptions.TransactionDeclinedRetryableError(
+                message,
+                **exception_kwargs,
+            )
+
+        if response_code in response_codes.non_retryable_failure_response_codes:
+            raise exceptions.TransactionDeclinedNotRetryableError(
+                message,
+                **exception_kwargs,
+            )
+
+        if response_code in response_codes.processing_error_response_codes:
+            raise exceptions.TransactionDeclinedProcessingError(
+                message,
+                **exception_kwargs,
+            )
+
+        raise exceptions.TransactionDeclinedError(
+            message,
+            **exception_kwargs,
+        )
 
 
 def config_gateway(security_key, payment_api_url, query_api_url):
