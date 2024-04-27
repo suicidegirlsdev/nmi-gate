@@ -175,7 +175,7 @@ class Nmi:
             )
 
         if response_code in response_codes.processing_error_response_codes:
-            raise exceptions.TransactionDeclinedProcessingError(
+            raise exceptions.TransactionProcessingError(
                 message,
                 **exception_kwargs,
             )

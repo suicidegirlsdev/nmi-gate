@@ -63,18 +63,17 @@ class TransactionDeclinedRetryableError(TransactionDeclinedError):
     """
 
 
-class TransactionDeclinedProcessingError(TransactionDeclinedError):
+class TransactionProcessingError(APIException):
     """
     Transaction failed due to a processor or gateway error.
     """
 
 
-class RateLimitError(TransactionDeclinedProcessingError):
+class RateLimitError(TransactionProcessingError):
     """
     Base for any rate limit being exceeded.
     These can be trigger from the HTTP status or from the
-    parsed response data. To keep things simple, even
-    the HTTP version inherits from ResponseError.
+    parsed response data.
     """
 
 
@@ -82,5 +81,5 @@ class SystemWideRateLimitError(RateLimitError, HTTPError):
     """Raised when the rate limit across all APIs exceeded"""
 
 
-class APIRateLimitError(RateLimitError):
+class APIRateLimitError(RateLimitError, ResponseError):
     """Raised when the rate limit for a single API is exceeded"""
