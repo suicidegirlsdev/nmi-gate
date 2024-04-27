@@ -135,11 +135,11 @@ class Nmi:
 
     def _raise_response_errors(self, parsed_response, response):
         response_code = parsed_response.get("response_code")
-        if not response_code or response_code == response_codes.approved_response_code:
+        if not response_code or response_code == response_codes.TRANSACTION_APPROVED:
             return
 
         trans_response_code_messages_dict = dict(response_codes.Transaction)
-        if response_code == response_codes.rate_limit_error_response_code:
+        if response_code == response_codes.TRANSACTION_RATE_LIMITED:
             raise exceptions.APIRateLimitError(
                 # Favor our message for this one
                 trans_response_code_messages_dict(response_code),
@@ -156,7 +156,7 @@ class Nmi:
             "parsed_response": parsed_response,
         }
 
-        if response_code == response_codes.duplicate_transaction_response_code:
+        if response_code == response_codes.TRANSACTION_DUPLICATE:
             raise exceptions.TransactionDeclinedDuplicateError(
                 message,
                 **exception_kwargs,
