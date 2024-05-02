@@ -1,3 +1,4 @@
+from decimal import Decimal
 from urllib.parse import parse_qsl
 
 import requests
@@ -130,6 +131,12 @@ class Nmi:
         if "cc_number" in response_dict:
             response_dict["cc_last4"] = (
                 response_dict["cc_number"][-4:] if response_dict["cc_number"] else ""
+            )
+        if "amount" in response_dict:
+            response_dict["amount"] = (
+                Decimal(response_dict["amount"])
+                if response_dict["amount"]
+                else Decimal("0.00")
             )
         return response_dict
 

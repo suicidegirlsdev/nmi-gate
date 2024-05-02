@@ -1,4 +1,5 @@
 from ..nmi import Nmi
+from ..utils import normalize_merchant_defined_fields
 
 
 class Transaction(Nmi):
@@ -10,14 +11,19 @@ class Transaction(Nmi):
         # initial transaction id from when the card was first used/stored.
         self.transaction_id = transaction_id
 
-    def charge_token(self, payment_token, amount, billing_info):
+    def charge_token(
+        self, payment_token, amount, billing_info, merchant_defined_fields=None, **extra
+    ):
         data = {
             "type": "sale",
             "security_key": self.security_key,
             "payment_token": payment_token,
             "amount": amount,
             **billing_info,
+            **extra,
         }
+        if merchant_defined_fields:
+            data.update(normalize_merchant_defined_fields(merchant_defined_fields))
         response = self._post_payment_api_request(data)
         self.transaction_id = response.get("transactionid")
         return response
@@ -42,3 +48,11 @@ class Transaction(Nmi):
             "transaction_id": self.transaction_id,
         }
         return self._post_query_api_request(query)
+
+    def void(self):
+        data = {
+            "type": "void",
+            "security_key": self.security_key,
+            "transactionid": self.transaction_id,
+        }
+        return self._post_payment_api_request(data)

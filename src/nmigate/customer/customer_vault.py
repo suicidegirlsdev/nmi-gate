@@ -1,6 +1,7 @@
 import uuid
 
 from ..nmi import Nmi
+from ..utils import normalize_merchant_defined_fields
 
 
 class CustomerVault(Nmi):
@@ -13,22 +14,67 @@ class CustomerVault(Nmi):
         # This will only get set if "create" is called
         self.billing_id = None
 
-    def _create_data(self, vault_action, **extra):
+    def _create_data(self, vault_action, ip_address="", is_recurring=True, **extra):
         if not self.customer_id:
             raise ValueError("Customer ID is required")
-        return {
+        data = {
             "security_key": self.security_key,
             "customer_vault": vault_action,
             "customer_vault_id": self.customer_id,
             **extra,
         }
+        if ip_address:
+            data["ipaddress"] = ip_address
+        if is_recurring:
+            data["billing_method"] = "recurring"
+        return data
 
-    def create(
+    def init_credentials_on_file(
+        self, ip_address="", is_recurring=True, amount=None, **extra
+    ):
+        """
+        Special case for when cards where stored into the vault but were
+        not setup to work with Credentials on File/don't have a stored
+        initial_transaction_id. Per support, they should be initialized
+        into the CoF system before they being used for merchant initiated
+        transactions.
+
+        Can pass no amount to allow initialization without a charge.
+        Make sure to save the transaction_id for future use.
+        """
+        data = {
+            "security_key": self.security_key,
+            "customer_vault_id": self.customer_id,
+            "ipaddress": ip_address,
+            "stored_credential_indicator": "stored",
+            "initiated_by": "customer",
+            **extra,
+        }
+        if ip_address:
+            data["ipaddress"] = ip_address
+
+        if amount:
+            data["amount"] = amount
+            data["type"] = "sale"
+        else:
+            data["type"] = "validate"
+
+        if is_recurring:
+            data["billing_method"] = "recurring"
+
+        return self._post_payment_api_request(data)
+
+    def _create(
         self,
         payment_token,
         billing_info,
+        # "sale" or "validate". Former should include amount
+        trans_type,
+        amount=None,
+        ip_address="",
         # Generated if not passed
         billing_id=None,
+        **extra,
     ):
         if not self.customer_id:
             self.customer_id = uuid.uuid4().hex
@@ -37,42 +83,106 @@ class CustomerVault(Nmi):
 
         data = self._create_data(
             "add_customer",
-            type="validate",
+            ip_address=ip_address,
+            is_recurring=True,
+            type=trans_type,
             initiated_by="customer",
             stored_credential_indicator="stored",
             payment_token=payment_token,
             billing_id=self.billing_id,
             **billing_info,
+            **extra,
         )
+        if amount:
+            data["amount"] = amount
+
         response = self._post_payment_api_request(data)
         # Make sure the billing_id used gets returned
         if "billing_id" not in response:
             response["billing_id"] = self.billing_id
         return response
 
-    def charge(self, amount, initial_transaction_id, initiated_by_customer=False):
+    def create(
+        self,
+        payment_token,
+        billing_info,
+        ip_address="",
+        # Generated if not passed
+        billing_id=None,
+        **extra,
+    ):
+        return self._create(
+            payment_token,
+            billing_info,
+            ip_address=ip_address,
+            trans_type="validate",
+            billing_id=billing_id,
+            **extra,
+        )
+
+    def charge_and_create(
+        self,
+        payment_token,
+        amount,
+        billing_info,
+        ip_address="",
+        # Generated if not passed
+        billing_id=None,
+        merchant_defined_fields=None,
+        **extra,
+    ):
+        if merchant_defined_fields:
+            extra.update(normalize_merchant_defined_fields(merchant_defined_fields))
+
+        return self.create(
+            payment_token,
+            billing_info,
+            ip_address=ip_address,
+            trans_type="sale",
+            amount=amount,
+            billing_id=billing_id,
+            **extra,
+        )
+
+    def charge(
+        self,
+        amount,
+        initial_transaction_id,
+        initiated_by_customer=False,
+        is_recurring=True,
+        order_description="",
+        merchant_defined_fields=None,
+        # Only used with customer initiated.
+        ip_address="",
+        **extra,
+    ):
+        # Pass merchant_defined_fields as a sparse array-like dict: {1: 'value', ...}
+        # Where the number corresponds to the configured Merchant Defined Field <number>
+        # the gateway merchant console. Can be 1-20.
         if not self.customer_id:
             self.customer_id = uuid.uuid4().hex
 
         data = {
+            "type": "sale",
             "security_key": self.security_key,
             "customer_vault_id": self.customer_id,
             "amount": amount,
             "initiated_by": "customer" if initiated_by_customer else "merchant",
             "stored_credential_indicator": "used",
             "initial_transaction_id": initial_transaction_id,
+            "order_description": order_description,
+            **extra,
         }
-        return self._post_payment_api_request(data)
 
-    def validate(self):
-        if not self.customer_id:
-            raise ValueError("Customer ID is required")
-        data = {
-            "type": "validate",
-            "security_key": self.security_key,
-            "customer_vault_id": self.customer_id,
-            "amount": "0.00",
-        }
+        if is_recurring:
+            data["billing_method"] = "recurring"
+
+        if initiated_by_customer and ip_address:
+            data["ipaddress"] = ip_address
+
+        if merchant_defined_fields:
+            data.update(normalize_merchant_defined_fields(merchant_defined_fields))
+
         return self._post_payment_api_request(data)
 
     def delete(self):
