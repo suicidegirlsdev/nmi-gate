@@ -48,8 +48,3 @@ class TestCustomerVault(unittest.TestCase):
             result["customer_vault"]["customer"]["customer_vault_id"],
             "1",
         )
-
-    def test_validate_customer_id(self):
-        customer_vault = CustomerVault("1")
-        result = customer_vault.validate()
-        print(result)

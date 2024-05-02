@@ -1,3 +1,4 @@
+from decimal import Decimal
 from urllib.parse import parse_qsl
 
 import requests
@@ -131,15 +132,21 @@ class Nmi:
             response_dict["cc_last4"] = (
                 response_dict["cc_number"][-4:] if response_dict["cc_number"] else ""
             )
+        if "amount" in response_dict:
+            response_dict["amount"] = (
+                Decimal(response_dict["amount"])
+                if response_dict["amount"]
+                else Decimal("0.00")
+            )
         return response_dict
 
     def _raise_response_errors(self, parsed_response, response):
         response_code = parsed_response.get("response_code")
-        if not response_code or response_code == response_codes.approved_response_code:
+        if not response_code or response_code == response_codes.TRANSACTION_APPROVED:
             return
 
         trans_response_code_messages_dict = dict(response_codes.Transaction)
-        if response_code == response_codes.rate_limit_error_response_code:
+        if response_code == response_codes.TRANSACTION_RATE_LIMITED:
             raise exceptions.APIRateLimitError(
                 # Favor our message for this one
                 trans_response_code_messages_dict(response_code),
@@ -156,7 +163,7 @@ class Nmi:
             "parsed_response": parsed_response,
         }
 
-        if response_code == response_codes.duplicate_transaction_response_code:
+        if response_code == response_codes.TRANSACTION_DUPLICATE:
             raise exceptions.TransactionDeclinedDuplicateError(
                 message,
                 **exception_kwargs,
@@ -175,7 +182,7 @@ class Nmi:
             )
 
         if response_code in response_codes.processing_error_response_codes:
-            raise exceptions.TransactionDeclinedProcessingError(
+            raise exceptions.TransactionProcessingError(
                 message,
                 **exception_kwargs,
             )

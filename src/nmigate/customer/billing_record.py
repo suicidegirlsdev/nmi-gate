@@ -26,7 +26,7 @@ class BillingRecord(Nmi):
         data = self._create_data("validate")
         return self._post_payment_api_request(data)
 
-    def add(self, payment_token, billing_info):
+    def add(self, payment_token, billing_info, **extra):
         if not self.billing_id:
             # API does not state a max, but including hyphens failed with "too long".
             # The hex version appears to work, though.
@@ -37,15 +37,17 @@ class BillingRecord(Nmi):
             payment="creditcard",
             payment_token=payment_token,
             **billing_info,
+            **extra,
         )
         return self._post_payment_api_request(data)
 
-    def update(self, payment_token, billing_info):
+    def update(self, payment_token, billing_info=None, **extra):
         data = self._create_data(
             "update_billing",
             payment="creditcard",
             payment_token=payment_token,
-            **billing_info,
+            **(billing_info or {}),
+            **extra,
         )
         return self._post_payment_api_request(data)
 

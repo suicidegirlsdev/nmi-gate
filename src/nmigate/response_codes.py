@@ -1,8 +1,14 @@
 # From:
 # https://docs.nmi.dev/reference/response-codes
 
+
+# Constants for some important ones
+TRANSACTION_DUPLICATE = 430
+TRANSACTION_RATE_LIMITED = 301
+TRANSACTION_APPROVED = 100
+
 Transaction = (
-    (100, "Transaction was approved"),
+    (TRANSACTION_APPROVED, "Transaction was approved"),
     (200, "Transaction was declined by processor"),
     (201, "Do not honor"),
     (202, "Insufficient funds"),
@@ -26,13 +32,13 @@ Transaction = (
     (263, "Declined-Update cardholder data available"),
     (264, "Declined-Retry in a few days"),
     (300, "Transaction was rejected by gateway"),
-    (301, "Too many requests (API)"),
+    (TRANSACTION_RATE_LIMITED, "Too many requests (API)"),
     (400, "Transaction error returned by processor"),
     (410, "Invalid merchant configuration"),
     (411, "Merchant account is inactive"),
     (420, "Communication error"),
     (421, "Communication error with issuer"),
-    (430, "Duplicate transaction at processor"),
+    (TRANSACTION_DUPLICATE, "Duplicate transaction at processor"),
     (440, "Processor format error"),
     (441, "Invalid transaction information"),
     (460, "Processor feature not available"),
@@ -52,9 +58,6 @@ non_retryable_failure_response_codes = (250, 251, 252, 253, 261, 262, 461)
 
 # These are issues with the gateway or processor.
 processing_error_response_codes = (300, 400, 410, 411, 420, 421, 440, 441, 460)
-duplicate_transaction_response_code = 430
-rate_limit_error_response_code = 301
-approved_response_code = 100
 
 Avs = (
     ("X", "Exact match, 9-character numeric ZIP"),

@@ -63,18 +63,18 @@ class TransactionDeclinedRetryableError(TransactionDeclinedError):
     """
 
 
-class TransactionDeclinedProcessingError(TransactionDeclinedError):
+class TransactionProcessingError(ResponseError):
     """
     Transaction failed due to a processor or gateway error.
     """
 
 
-class RateLimitError(TransactionDeclinedProcessingError):
+class RateLimitError(TransactionProcessingError):
     """
     Base for any rate limit being exceeded.
     These can be trigger from the HTTP status or from the
-    parsed response data. To keep things simple, even
-    the HTTP version inherits from ResponseError.
+    parsed response data but always inherit from ResponseError
+    to keep things a little simpler.
     """
 
 
