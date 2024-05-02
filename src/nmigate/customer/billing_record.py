@@ -27,6 +27,12 @@ class BillingRecord(Nmi):
         return self._post_payment_api_request(data)
 
     def add(self, payment_token, billing_info, **extra):
+        # FIXME: This seems wrong. The API docs do not cover this particular
+        # scenario (for use with CoF). The responses from Support suggested
+        # using "add_customer", will need to test it out.
+        # It seems like might have to make two API calls, one as this currently does,
+        # to add the billing record, and then another to initialize the card for CoF
+        # (see CustomerVault.init_credentials_on_file).
         if not self.billing_id:
             # API does not state a max, but including hyphens failed with "too long".
             # The hex version appears to work, though.
@@ -36,9 +42,13 @@ class BillingRecord(Nmi):
             "add_billing",
             payment="creditcard",
             payment_token=payment_token,
+            initiated_by="customer",
+            stored_credential_indicator="stored",
+            billing_method="recurring",
             **billing_info,
             **extra,
         )
+
         return self._post_payment_api_request(data)
 
     def update(self, payment_token, billing_info=None, **extra):

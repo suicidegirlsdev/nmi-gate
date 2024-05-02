@@ -30,7 +30,7 @@ class CustomerVault(Nmi):
         return data
 
     def init_credentials_on_file(
-        self, ip_address="", is_recurring=True, amount=None, **extra
+        self, billing_id, ip_address="", is_recurring=True, amount=None, **extra
     ):
         """
         Special case for when cards where stored into the vault but were
@@ -41,15 +41,20 @@ class CustomerVault(Nmi):
 
         Can pass no amount to allow initialization without a charge.
         Make sure to save the transaction_id for future use.
+
+        Billing_id is mandatory arg since will usually want it, but can pass
+        None if sure you don't need it.
         """
         data = {
             "security_key": self.security_key,
             "customer_vault_id": self.customer_id,
-            "ipaddress": ip_address,
             "stored_credential_indicator": "stored",
             "initiated_by": "customer",
             **extra,
         }
+        if billing_id:
+            data["billing_id"] = billing_id
+
         if ip_address:
             data["ipaddress"] = ip_address
 
@@ -84,6 +89,9 @@ class CustomerVault(Nmi):
         data = self._create_data(
             "add_customer",
             ip_address=ip_address,
+            # Even support didn't seem 100% certain, but it seems like
+            # if we are ever going to want to do a recurring charge then
+            # this should be true during initial setup.
             is_recurring=True,
             type=trans_type,
             initiated_by="customer",
