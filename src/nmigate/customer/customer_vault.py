@@ -30,7 +30,13 @@ class CustomerVault(Nmi):
         return data
 
     def init_credentials_on_file(
-        self, billing_id, ip_address="", is_recurring=True, amount=None, **extra
+        self,
+        billing_id,
+        ip_address="",
+        is_recurring=True,
+        amount=None,
+        order_id="",
+        **extra,
     ):
         """
         Special case for when cards where stored into the vault but were
@@ -64,6 +70,9 @@ class CustomerVault(Nmi):
         else:
             data["type"] = "validate"
 
+        if order_id:
+            data["order_id"] = order_id
+
         if is_recurring:
             data["billing_method"] = "recurring"
 
@@ -78,7 +87,8 @@ class CustomerVault(Nmi):
         amount=None,
         ip_address="",
         # Generated if not passed
-        billing_id=None,
+        billing_id="",
+        order_id="",
         **extra,
     ):
         if not self.customer_id:
@@ -103,6 +113,8 @@ class CustomerVault(Nmi):
         )
         if amount:
             data["amount"] = amount
+        if order_id:
+            data["order_id"] = order_id
 
         response = self._post_payment_api_request(data)
         # Make sure the billing_id used gets returned
@@ -116,7 +128,7 @@ class CustomerVault(Nmi):
         billing_info,
         ip_address="",
         # Generated if not passed
-        billing_id=None,
+        billing_id="",
         **extra,
     ):
         return self._create(
@@ -135,7 +147,8 @@ class CustomerVault(Nmi):
         billing_info,
         ip_address="",
         # Generated if not passed
-        billing_id=None,
+        billing_id="",
+        order_id="",
         merchant_defined_fields=None,
         **extra,
     ):
@@ -149,6 +162,7 @@ class CustomerVault(Nmi):
             trans_type="sale",
             amount=amount,
             billing_id=billing_id,
+            order_id=order_id,
             **extra,
         )
 
@@ -162,6 +176,7 @@ class CustomerVault(Nmi):
         merchant_defined_fields=None,
         # Only used with customer initiated.
         ip_address="",
+        order_id="",
         **extra,
     ):
         # Pass merchant_defined_fields as a sparse array-like dict: {1: 'value', ...}
@@ -190,6 +205,9 @@ class CustomerVault(Nmi):
 
         if merchant_defined_fields:
             data.update(normalize_merchant_defined_fields(merchant_defined_fields))
+
+        if order_id:
+            data["order_id"] = order_id
 
         return self._post_payment_api_request(data)
 
