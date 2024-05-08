@@ -73,6 +73,10 @@ class Nmi:
         return response
 
     def _post_payment_api_request(self, data):
+        if "amount" in data and isinstance(data["amount"], (int, float)):
+            # Convert numeric values to a string with two decimal places.
+            data["amount"] = f'{data["amount"]:.2f}'
+
         response = self._post_request(self.payment_api_url, data)
         return self._parse_payment_api_response(response)
 
@@ -111,7 +115,7 @@ class Nmi:
 
     def _normalize_response_dict(self, response_dict):
         if "response" in response_dict:
-            response_dict["response"] == int(response_dict["response"]) or 0
+            response_dict["response"] = int(response_dict["response"]) or 0
 
         if "response_code" in response_dict:
             response_dict["response_code"] = int(response_dict["response_code"]) or 0
@@ -149,14 +153,16 @@ class Nmi:
         if response_code == response_codes.TRANSACTION_RATE_LIMITED:
             raise exceptions.APIRateLimitError(
                 # Favor our message for this one
-                trans_response_code_messages_dict(response_code),
+                trans_response_code_messages_dict.get(
+                    response_code, parsed_response.get("responsetext")
+                ),
                 response=response,
                 parsed_response=parsed_response,
             )
 
         message = parsed_response.get(
             "responsetext"
-        ) or trans_response_code_messages_dict(response_code)
+        ) or trans_response_code_messages_dict.get(response_code, "Unexpected error")
 
         exception_kwargs = {
             "response": response,
@@ -169,6 +175,12 @@ class Nmi:
                 **exception_kwargs,
             )
 
+        if parsed_response["response"] == 3:
+            raise exceptions.TransactionProcessingError(
+                message,
+                **exception_kwargs,
+            )
+
         if response_code in response_codes.retryable_failure_response_codes:
             raise exceptions.TransactionDeclinedRetryableError(
                 message,
@@ -177,12 +189,6 @@ class Nmi:
 
         if response_code in response_codes.non_retryable_failure_response_codes:
             raise exceptions.TransactionDeclinedNotRetryableError(
-                message,
-                **exception_kwargs,
-            )
-
-        if response_code in response_codes.processing_error_response_codes:
-            raise exceptions.TransactionProcessingError(
                 message,
                 **exception_kwargs,
             )
