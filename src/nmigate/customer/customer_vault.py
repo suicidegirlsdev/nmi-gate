@@ -71,7 +71,7 @@ class CustomerVault(Nmi):
             data["type"] = "validate"
 
         if order_id:
-            data["order_id"] = order_id
+            data["orderid"] = order_id
 
         if is_recurring:
             data["billing_method"] = "recurring"
@@ -114,7 +114,7 @@ class CustomerVault(Nmi):
         if amount:
             data["amount"] = amount
         if order_id:
-            data["order_id"] = order_id
+            data["orderid"] = order_id
 
         response = self._post_payment_api_request(data)
         # Make sure the billing_id used gets returned
@@ -207,7 +207,7 @@ class CustomerVault(Nmi):
             data.update(normalize_merchant_defined_fields(merchant_defined_fields))
 
         if order_id:
-            data["order_id"] = order_id
+            data["orderid"] = order_id
 
         return self._post_payment_api_request(data)
 

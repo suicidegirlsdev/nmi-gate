@@ -57,6 +57,7 @@ retryable_failure_response_codes = (202, 203, 264, 420, 421)
 non_retryable_failure_response_codes = (250, 251, 252, 253, 261, 262, 461)
 
 # These are issues with the gateway or processor.
+# Note: use response = '3' as authority on error status, not these.
 processing_error_response_codes = (300, 400, 410, 411, 420, 421, 440, 441, 460)
 
 Avs = (
