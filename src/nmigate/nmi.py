@@ -86,7 +86,14 @@ class Nmi:
 
     def _parse_payment_api_response(self, response):
         """convert to dict and add a "successful" key based on response code."""
-        response_dict = dict(parse_qsl(response.text)) if response.text else {}
+        # The API returns a query string but does not encode the "+" character,
+        # (ie, in emails) so parse_qsl will convert it to a space.
+        # Replace it with % encoding first, to keep it a +.
+        if response.text:
+            response_str = response.text.replace("+", "%2B")
+            response_dict = dict(parse_qsl(response_str))
+        else:
+            response_dict = {}
         self._normalize_response_dict(response_dict)
         if self.raise_response_errors:
             self._raise_response_errors(response_dict, response)
@@ -142,6 +149,12 @@ class Nmi:
                 if response_dict["amount"]
                 else Decimal("0.00")
             )
+        if "cc_type" in response_dict:
+            response_dict["cc_type"] = response_dict["cc_type"].lower()
+            # Looks like some API responses return "american_express" instead of "amex"
+            if response_dict["cc_type"] == "american_express":
+                response_dict["cc_type"] = "amex"
+
         return response_dict
 
     def _raise_response_errors(self, parsed_response, response):
