@@ -36,6 +36,8 @@ class CustomerVault(Nmi):
         is_recurring=True,
         amount=None,
         order_id="",
+        order_description="",
+        merchant_defined_fields=None,
         **extra,
     ):
         """
@@ -76,6 +78,12 @@ class CustomerVault(Nmi):
         if is_recurring:
             data["billing_method"] = "recurring"
 
+        if order_description:
+            data["order_description"] = order_description
+
+        if merchant_defined_fields:
+            data.update(normalize_merchant_defined_fields(merchant_defined_fields))
+
         return self._post_payment_api_request(data)
 
     def _create(
@@ -89,6 +97,7 @@ class CustomerVault(Nmi):
         # Generated if not passed
         billing_id="",
         order_id="",
+        order_description="",
         **extra,
     ):
         if not self.customer_id:
@@ -115,6 +124,8 @@ class CustomerVault(Nmi):
             data["amount"] = amount
         if order_id:
             data["orderid"] = order_id
+        if order_description:
+            data["order_description"] = order_description
 
         response = self._post_payment_api_request(data)
         # Make sure the billing_id used gets returned
@@ -149,13 +160,14 @@ class CustomerVault(Nmi):
         # Generated if not passed
         billing_id="",
         order_id="",
+        order_description="",
         merchant_defined_fields=None,
         **extra,
     ):
         if merchant_defined_fields:
             extra.update(normalize_merchant_defined_fields(merchant_defined_fields))
 
-        return self.create(
+        return self._create(
             payment_token,
             billing_info,
             ip_address=ip_address,
@@ -163,6 +175,7 @@ class CustomerVault(Nmi):
             amount=amount,
             billing_id=billing_id,
             order_id=order_id,
+            order_description=order_description,
             **extra,
         )
 
