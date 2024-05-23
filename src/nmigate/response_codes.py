@@ -48,13 +48,25 @@ Transaction = (
 # These should generally be ones that can be retried without changing anything
 # after an appropriate delay (ie, at least a day for most).
 # Other declines may also be retryable if auto-card update happens, etc.
-retryable_failure_response_codes = (202, 203, 264, 420, 421)
+retryable_failure_response_codes = {
+    202,
+    203,
+    263,
+    264,
+    300,
+    TRANSACTION_RATE_LIMITED,
+    410,
+    411,
+    420,
+    421,
+    440,
+    441,
+}
 
-# These should not be retried without changing something.
-# Does not include "normal" declines, only things known to be non-retryable
-# like fraud/lost/stolen card or unsupport card. Also includes the "stop recurring"
-# decline codes.
-non_retryable_failure_response_codes = (250, 251, 252, 253, 261, 262, 461)
+# Hard declines
+non_retryable_failure_response_codes = (
+    set(Transaction.keys()) - retryable_failure_response_codes
+).remove(TRANSACTION_APPROVED)
 
 # These are issues with the gateway or processor.
 # Note: use response = '3' as authority on error status, not these.
