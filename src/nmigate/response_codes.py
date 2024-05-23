@@ -55,12 +55,15 @@ retryable_failure_response_codes = {
     264,
     300,
     TRANSACTION_RATE_LIMITED,
+    400,
     410,
     411,
     420,
     421,
+    TRANSACTION_DUPLICATE,
     440,
     441,
+    460,
 }
 
 # Hard declines
