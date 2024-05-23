@@ -65,8 +65,10 @@ retryable_failure_response_codes = {
 
 # Hard declines
 non_retryable_failure_response_codes = (
-    set(dict(Transaction).keys()) - retryable_failure_response_codes
-).remove(TRANSACTION_APPROVED)
+    set(dict(Transaction).keys())
+    - retryable_failure_response_codes
+    - {TRANSACTION_APPROVED}
+)
 
 # These are issues with the gateway or processor.
 # Note: use response = '3' as authority on error status, not these.
