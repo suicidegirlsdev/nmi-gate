@@ -15,7 +15,6 @@ class BillingRecord(Nmi):
         if not self.billing_id:
             raise ValueError("Billing ID is required")
         return {
-            "security_key": self.security_key,
             "type": payment_action,
             "customer_vault_id": self.customer_id,
             "billing_id": self.billing_id,
@@ -70,7 +69,6 @@ class BillingRecord(Nmi):
             raise ValueError("Billing ID is required")
         data = {
             "customer_vault": "update_billing",
-            "security_key": self.security_key,
             "customer_vault_id": self.customer_id,
             "billing_id": self.billing_id,
             "priority": priority,

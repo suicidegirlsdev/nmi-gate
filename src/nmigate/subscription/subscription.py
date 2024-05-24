@@ -22,7 +22,6 @@ class Subscription(Nmi):
             "initiated_by": "merchant",
             "stored_credential_indicator": "used",
             "initial_transaction_id": transaction_id,
-            "security_key": self.security_key,
             "amount": str(plan_amount),
             "customer_vault_id": customer_vault_id,
             "plan_id": plan_id,
@@ -43,7 +42,6 @@ class Subscription(Nmi):
             "initiated_by": "merchant",
             "stored_credential_indicator": "used",
             "initial_transaction_id": request_sub["transaction_id"],
-            "security_key": self.security_key,
             "customer_vault_id": request_sub["user_id"],
             "amount": request_sub["total_amount"],
             "plan_payments": request_sub["custom_subscription_info"]["plan_payments"],
@@ -70,7 +68,6 @@ class Subscription(Nmi):
             "initiated_by": "merchant",
             "stored_credential_indicator": "used",
             "initial_transaction_id": request_sub["transaction_id"],
-            "security_key": self.security_key,
             "amount": request_sub["total_amount"],
             "customer_vault_id": request_sub["user_id"],
             "plan_payments": request_sub["custom_subscription_info"]["plan_payments"],
@@ -87,7 +84,6 @@ class Subscription(Nmi):
     def get_info(self, id) -> Any:
         query = {
             "report_type": "recurring",
-            "security_key": self.security_key,
             "subscription_id": id,
         }
         return self._post_query_api_request(query)
@@ -95,7 +91,6 @@ class Subscription(Nmi):
     def delete(self, subscription_id):
         data = {
             "recurring": "delete_subscription",
-            "security_key": self.security_key,
             "subscription_id": subscription_id,
         }
         return self._post_payment_api_request(data)
@@ -103,7 +98,6 @@ class Subscription(Nmi):
     def pause(self, subscription_id, pause):
         data = {
             "recurring": "update_subscription",
-            "security_key": self.security_key,
             "subscription_id": subscription_id,
             "paused_subscription": str(pause).lower(),
         }
@@ -123,7 +117,6 @@ class Subscription(Nmi):
     ):
         data = {
             "recurring": "update_subscription",
-            "security_key": self.security_key,
             "subscription_id": subscription_id,
             "customer_vault_id": customer_vault_id,
             "billing_id": billing_id,
@@ -150,7 +143,6 @@ class Subscription(Nmi):
     ):
         data = {
             "recurring": "update_subscription",
-            "security_key": self.security_key,
             "subscription_id": subscription_id,
             "customer_vault_id": customer_vault_id,
             "billing_id": billing_id,

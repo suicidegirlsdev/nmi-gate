@@ -13,6 +13,7 @@ class Nmi:
     security_key = None
     payment_api_url = None
     query_api_url = None
+    log_only = False
 
     # Will raise on anything that isn't an "approved" response code.
     # Can grab the parsed response from the exception if needed.
@@ -36,6 +37,11 @@ class Nmi:
             raise ValueError("NMI gateway requires the query API URL to be set.")
 
     def _post_request(self, url, data):
+        if self.log_only:
+            print(data)
+            raise exceptions.APIException("Log only mode enabled")
+
+        data["security_key"] = self.security_key
         response = None
         try:
             response = requests.post(url=url, data=data)
