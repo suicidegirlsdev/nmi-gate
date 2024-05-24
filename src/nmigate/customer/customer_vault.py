@@ -18,7 +18,6 @@ class CustomerVault(Nmi):
         if not self.customer_id:
             raise ValueError("Customer ID is required")
         data = {
-            "security_key": self.security_key,
             "customer_vault": vault_action,
             "customer_vault_id": self.customer_id,
             **extra,
@@ -54,7 +53,6 @@ class CustomerVault(Nmi):
         None if sure you don't need it.
         """
         data = {
-            "security_key": self.security_key,
             "customer_vault_id": self.customer_id,
             "stored_credential_indicator": "stored",
             "initiated_by": "customer",
@@ -200,7 +198,6 @@ class CustomerVault(Nmi):
 
         data = {
             "type": "sale",
-            "security_key": self.security_key,
             "customer_vault_id": self.customer_id,
             "amount": amount,
             "initiated_by": "customer" if initiated_by_customer else "merchant",
@@ -227,7 +224,6 @@ class CustomerVault(Nmi):
     def delete(self):
         data = {
             "customer_vault": "delete_customer",
-            "security_key": self.security_key,
             "customer_vault_id": self.customer_id,
         }
         return self._post_payment_api_request(data)
@@ -237,7 +233,6 @@ class CustomerVault(Nmi):
             raise ValueError("Customer ID is required")
         data = {
             "report_type": "customer_vault",
-            "security_key": self.security_key,
             "customer_vault_id": self.customer_id,
         }
         return self._post_query_api_request(data)

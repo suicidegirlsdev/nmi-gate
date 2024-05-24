@@ -16,7 +16,6 @@ class Transaction(Nmi):
     ):
         data = {
             "type": "sale",
-            "security_key": self.security_key,
             "payment_token": payment_token,
             "amount": amount,
             **billing_info,
@@ -33,7 +32,6 @@ class Transaction(Nmi):
             "type": "refund",
             "payment": "creditcard",
             "amount": amount,
-            "security_key": self.security_key,
             "transactionid": self.transaction_id,
         }
         return self._post_payment_api_request(data)
@@ -44,7 +42,6 @@ class Transaction(Nmi):
 
     def get_info(self):
         query = {
-            "security_key": self.security_key,
             "transaction_id": self.transaction_id,
         }
         return self._post_query_api_request(query)
@@ -52,7 +49,6 @@ class Transaction(Nmi):
     def void(self):
         data = {
             "type": "void",
-            "security_key": self.security_key,
             "transactionid": self.transaction_id,
         }
         return self._post_payment_api_request(data)
