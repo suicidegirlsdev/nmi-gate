@@ -9,6 +9,7 @@ class CustomerVault(Nmi):
         super().__init__(*args, **kwargs)
         # If no customer_id passed then only "create" can be used
         # and it will generate one.
+        # Must pass to use an existing customer.
         self.customer_id = customer_id
 
         # This will only get set if "create" is called
@@ -94,17 +95,23 @@ class CustomerVault(Nmi):
         ip_address="",
         # Generated if not passed
         billing_id="",
+        billing_priority=1,
         order_id="",
         order_description="",
         **extra,
     ):
-        if not self.customer_id:
+        if self.customer_id:
+            # If customer id passed, then this is a new card for an existing
+            # customer.
+            vault_action = "add_billing"
+        else:
+            vault_action = "add-customer"
             self.customer_id = uuid.uuid4().hex
 
         self.billing_id = billing_id or uuid.uuid4().hex
 
         data = self._create_data(
-            "add_customer",
+            vault_action,
             ip_address=ip_address,
             # Even support didn't seem 100% certain, but it seems like
             # if we are ever going to want to do a recurring charge then
@@ -115,6 +122,7 @@ class CustomerVault(Nmi):
             stored_credential_indicator="stored",
             payment_token=payment_token,
             billing_id=self.billing_id,
+            priority=billing_priority,
             **billing_info,
             **extra,
         )
@@ -155,13 +163,18 @@ class CustomerVault(Nmi):
         amount,
         billing_info,
         ip_address="",
-        # Generated if not passed
+        # Generated if not passed. Do not pass existing.
         billing_id="",
         order_id="",
         order_description="",
         merchant_defined_fields=None,
         **extra,
     ):
+        """
+        Create and charge a new card in the vault.
+        Will create a new customer as well
+        if no customer_id is set on the instance.
+        """
         if merchant_defined_fields:
             extra.update(normalize_merchant_defined_fields(merchant_defined_fields))
 
