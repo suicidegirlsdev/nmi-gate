@@ -14,6 +14,7 @@ class Nmi:
     payment_api_url = None
     query_api_url = None
     log_only = False
+    debug = False
 
     # Will raise on anything that isn't an "approved" response code.
     # Can grab the parsed response from the exception if needed.
@@ -40,11 +41,16 @@ class Nmi:
         if self.log_only:
             print(data)
             raise exceptions.APIException("Log only mode enabled")
+        if self.debug:
+            print("** REQUEST:", data)
 
         data["security_key"] = self.security_key
         response = None
         try:
             response = requests.post(url=url, data=data)
+            if self.debug:
+                print(f"** RESPONSE ({response.status_code}):", data)
+
             if response.status_code == 429:
                 # Note: there can be other rate limit errors in the
                 # response payload, with 200 status. Checked later, after parsing.
@@ -218,7 +224,8 @@ class Nmi:
         )
 
 
-def config_gateway(security_key, payment_api_url, query_api_url):
+def config_gateway(security_key, payment_api_url, query_api_url, debug=False):
     Nmi.security_key = security_key
     Nmi.payment_api_url = payment_api_url
     Nmi.query_api_url = query_api_url
+    Nmi.debug = debug
