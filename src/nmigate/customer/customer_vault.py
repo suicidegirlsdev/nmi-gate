@@ -105,7 +105,7 @@ class CustomerVault(Nmi):
             # customer.
             vault_action = "add_billing"
         else:
-            vault_action = "add-customer"
+            vault_action = "add_customer"
             self.customer_id = uuid.uuid4().hex
 
         self.billing_id = billing_id or uuid.uuid4().hex
