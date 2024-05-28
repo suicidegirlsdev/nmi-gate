@@ -1,7 +1,9 @@
-import uuid
-
 from ..nmi import Nmi
-from ..utils import normalize_merchant_defined_fields
+from ..utils import (
+    generate_billing_id,
+    generate_customer_id,
+    normalize_merchant_defined_fields,
+)
 
 
 class CustomerVault(Nmi):
@@ -106,9 +108,9 @@ class CustomerVault(Nmi):
             vault_action = "add_billing"
         else:
             vault_action = "add_customer"
-            self.customer_id = uuid.uuid4().hex
+            self.customer_id = generate_customer_id()
 
-        self.billing_id = billing_id or uuid.uuid4().hex
+        self.billing_id = billing_id or generate_billing_id()
 
         data = self._create_data(
             vault_action,
@@ -207,7 +209,7 @@ class CustomerVault(Nmi):
         # Where the number corresponds to the configured Merchant Defined Field <number>
         # the gateway merchant console. Can be 1-20.
         if not self.customer_id:
-            self.customer_id = uuid.uuid4().hex
+            self.customer_id = generate_customer_id()
 
         data = {
             "type": "sale",

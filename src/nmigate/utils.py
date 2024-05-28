@@ -1,4 +1,5 @@
 import calendar
+import uuid
 from datetime import date, datetime
 
 
@@ -15,3 +16,11 @@ def normalize_merchant_defined_fields(merchant_defined_fields):
         for k, v in merchant_defined_fields.items()
         if isinstance(k, int) or not k.startswith("merchant_defined_field_")
     }
+
+
+def generate_customer_id():
+    return uuid.uuid4().hex
+
+
+def generate_billing_id():
+    return uuid.uuid4().hex
