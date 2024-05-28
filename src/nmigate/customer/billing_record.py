@@ -1,6 +1,5 @@
-import uuid
-
 from ..nmi import Nmi
+from ..utils import generate_billing_id
 
 
 class BillingRecord(Nmi):
@@ -35,7 +34,7 @@ class BillingRecord(Nmi):
         if not self.billing_id:
             # API does not state a max, but including hyphens failed with "too long".
             # The hex version appears to work, though.
-            self.billing_id = uuid.uuid4().hex
+            self.billing_id = generate_billing_id()
 
         data = self._create_data(
             "add_billing",
