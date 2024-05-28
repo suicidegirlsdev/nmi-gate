@@ -49,7 +49,7 @@ class Nmi:
         try:
             response = requests.post(url=url, data=data)
             if self.debug:
-                print(f"** RESPONSE ({response.status_code}):", data)
+                print(f"** RAW RESPONSE ({response.status_code}):", response.text)
 
             if response.status_code == 429:
                 # Note: there can be other rate limit errors in the
@@ -107,6 +107,9 @@ class Nmi:
         else:
             response_dict = {}
         self._normalize_response_dict(response_dict)
+        if self.debug:
+            print("** PARSED RESPONSE:", response_dict)
+
         if self.raise_response_errors:
             self._raise_response_errors(response_dict, response)
 
@@ -128,6 +131,9 @@ class Nmi:
         response_dict = xmltodict.parse(entity_definitions + xml_string)
         response_dict = response_dict.get("nm_response", response_dict)
         self._normalize_response_dict(response_dict)
+        if self.debug:
+            print("** PARSED RESPONSE:", response_dict)
+
         if self.raise_response_errors:
             self._raise_response_errors(response_dict, response)
         return response_dict
