@@ -192,6 +192,39 @@ class CustomerVault(Nmi):
             **extra,
         )
 
+    def validate_and_create(
+        self,
+        payment_token,
+        amount,
+        billing_info,
+        ip_address="",
+        # Generated if not passed. Do not pass existing.
+        billing_id="",
+        order_id="",
+        order_description="",
+        merchant_defined_fields=None,
+        **extra,
+    ):
+        """
+        Create and validate a new card in the vault.
+        Will create a new customer as well
+        if no customer_id is set on the instance.
+        """
+        if merchant_defined_fields:
+            extra.update(normalize_merchant_defined_fields(merchant_defined_fields))
+
+        return self._create(
+            payment_token,
+            billing_info,
+            ip_address=ip_address,
+            trans_type="validate",
+            amount=None,
+            billing_id=billing_id,
+            order_id=order_id,
+            order_description=order_description,
+            **extra,
+        )
+
     def charge(
         self,
         amount,
