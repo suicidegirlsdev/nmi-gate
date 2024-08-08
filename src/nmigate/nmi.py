@@ -15,18 +15,30 @@ class Nmi:
     query_api_url = None
     log_only = False
     debug = False
+    # Optional class attr for Requests proxy dict, used if enabled.
+    proxies = None
+    # Must set True to use proxies defined above.
+    proxies_enabled = False
 
     # Will raise on anything that isn't an "approved" response code.
     # Can grab the parsed response from the exception if needed.
     raise_response_errors = True
 
-    def __init__(self, security_key=None, payment_api_url=None, query_api_url=None):
+    def __init__(
+        self,
+        security_key=None,
+        payment_api_url=None,
+        query_api_url=None,
+        proxies_enabled=None,
+    ):
         if security_key:
             self.security_key = security_key
         if payment_api_url:
             self.payment_api_url
         if query_api_url:
             self.query_api_url
+        if proxies_enabled is not None:
+            self.proxies_enabled = proxies_enabled
 
         # Ensure minimum required values are set.
         if not self.security_key:
@@ -41,13 +53,21 @@ class Nmi:
         if self.log_only:
             print(data)
             raise exceptions.APIException("Log only mode enabled")
+
+        proxies = self.proxies if self.proxies_enabled else None
         if self.debug:
             print("** REQUEST:", data)
+            if proxies:
+                print("** PROXIES:", proxies)
 
         data["security_key"] = self.security_key
         response = None
         try:
-            response = requests.post(url=url, data=data)
+            response = requests.post(
+                url=url,
+                data=data,
+                proxies=proxies,
+            )
             if self.debug:
                 print(f"** RESPONSE ({response.status_code}):", data)
 
@@ -224,8 +244,17 @@ class Nmi:
         )
 
 
-def config_gateway(security_key, payment_api_url, query_api_url, debug=False):
+def config_gateway(
+    security_key,
+    payment_api_url,
+    query_api_url,
+    proxies=None,
+    proxies_enabled=False,
+    debug=False,
+):
     Nmi.security_key = security_key
     Nmi.payment_api_url = payment_api_url
     Nmi.query_api_url = query_api_url
     Nmi.debug = debug
+    Nmi.proxies = proxies
+    Nmi.proxies_enabled = proxies_enabled
