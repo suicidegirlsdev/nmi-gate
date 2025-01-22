@@ -229,8 +229,7 @@ class CustomerVault(Nmi):
         self,
         amount,
         initial_transaction_id,
-        # If not passed, will charge default card
-        billing_id="",
+        billing_id,
         initiated_by_customer=False,
         is_recurring=True,
         order_description="",
@@ -240,9 +239,17 @@ class CustomerVault(Nmi):
         order_id="",
         **extra,
     ):
-        # Pass merchant_defined_fields as a sparse array-like dict: {1: 'value', ...}
-        # Where the number corresponds to the configured Merchant Defined Field <number>
-        # the gateway merchant console. Can be 1-20.
+        """
+        Charge an existing customer card.
+
+        The billing_id and initial_transaction_id must correlate;
+        the initial transaction MUST have been completed using the card
+        represented on NMI as billing_id.
+
+        Pass merchant_defined_fields as a sparse array-like dict: {1: 'value', ...}
+        Where the number corresponds to the configured Merchant Defined Field <number>
+        the gateway merchant console. Can be 1-20.
+        """
         if not self.customer_id:
             self.customer_id = generate_customer_id()
 
