@@ -14,7 +14,7 @@ class CustomerVault(Nmi):
         # Must pass to use an existing customer.
         self.customer_id = customer_id
 
-        # This will only get set if "create" is called
+        # This will only get set if passed or generated during a create.
         self.billing_id = None
 
     def _create_data(self, vault_action, ip_address="", is_recurring=True, **extra):
@@ -229,6 +229,7 @@ class CustomerVault(Nmi):
         self,
         amount,
         initial_transaction_id,
+        billing_id,
         initiated_by_customer=False,
         is_recurring=True,
         order_description="",
@@ -238,9 +239,17 @@ class CustomerVault(Nmi):
         order_id="",
         **extra,
     ):
-        # Pass merchant_defined_fields as a sparse array-like dict: {1: 'value', ...}
-        # Where the number corresponds to the configured Merchant Defined Field <number>
-        # the gateway merchant console. Can be 1-20.
+        """
+        Charge an existing customer card.
+
+        The billing_id and initial_transaction_id must correlate;
+        the initial transaction MUST have been completed using the card
+        represented on NMI as billing_id.
+
+        Pass merchant_defined_fields as a sparse array-like dict: {1: 'value', ...}
+        Where the number corresponds to the configured Merchant Defined Field <number>
+        the gateway merchant console. Can be 1-20.
+        """
         if not self.customer_id:
             self.customer_id = generate_customer_id()
 
@@ -252,8 +261,11 @@ class CustomerVault(Nmi):
             "stored_credential_indicator": "used",
             "initial_transaction_id": initial_transaction_id,
             "order_description": order_description,
+            "billing_id": billing_id,
             **extra,
         }
+
+        self.billing_id = billing_id
 
         if is_recurring:
             data["billing_method"] = "recurring"
