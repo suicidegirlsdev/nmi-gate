@@ -14,7 +14,7 @@ class CustomerVault(Nmi):
         # Must pass to use an existing customer.
         self.customer_id = customer_id
 
-        # This will only get set if "create" is called
+        # This will only get set if passed or generated during a create.
         self.billing_id = None
 
     def _create_data(self, vault_action, ip_address="", is_recurring=True, **extra):
@@ -229,6 +229,8 @@ class CustomerVault(Nmi):
         self,
         amount,
         initial_transaction_id,
+        # If not passed, will charge default card
+        billing_id="",
         initiated_by_customer=False,
         is_recurring=True,
         order_description="",
@@ -254,6 +256,11 @@ class CustomerVault(Nmi):
             "order_description": order_description,
             **extra,
         }
+
+        self.billing_id = billing_id
+
+        if billing_id:
+            data["billing_id"] = billing_id
 
         if is_recurring:
             data["billing_method"] = "recurring"
