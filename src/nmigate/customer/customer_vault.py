@@ -261,13 +261,11 @@ class CustomerVault(Nmi):
             "stored_credential_indicator": "used",
             "initial_transaction_id": initial_transaction_id,
             "order_description": order_description,
+            "billing_id": billing_id,
             **extra,
         }
 
         self.billing_id = billing_id
-
-        if billing_id:
-            data["billing_id"] = billing_id
 
         if is_recurring:
             data["billing_method"] = "recurring"
